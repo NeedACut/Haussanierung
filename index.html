@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sanierungsplaner – Kosten, Förderung & Finanzierung</title>
+<style>
+:root{--bg:#f3f5f7;--card:#fff;--ink:#1d2733;--mute:#64748b;--line:#e2e8f0;--pri:#0f766e;--pri2:#14b8a6;--acc:#d97706;--red:#dc2626;--blue:#2563eb;--green:#16a34a;--r:12px}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#0f766e,#134e4a);color:#fff;padding:16px 24px 0}
+header .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{margin:0;font-size:20px}
+header .sub{opacity:.8;font-size:12.5px}
+header .actions{display:flex;gap:6px;flex-wrap:wrap}
+header .actions button,header .actions label{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;padding:6px 11px;border-radius:8px;cursor:pointer;font:inherit;font-size:12.5px}
+header .actions button:hover,header .actions label:hover{background:rgba(255,255,255,.25)}
+nav{display:flex;gap:2px;margin-top:12px;overflow-x:auto}
+nav button{background:transparent;border:0;color:#ccfbf1;padding:10px 15px;border-radius:10px 10px 0 0;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--bg);color:var(--pri)}
+.kpibar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.kpibar div{padding:9px 18px;border-right:1px solid var(--line);min-width:145px;flex:1}
+.kpibar small{display:block;color:var(--mute);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}
+.kpibar b{font-size:16.5px;white-space:nowrap}
+main{max-width:1320px;margin:0 auto;padding:20px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(400px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.card h2{margin:0 0 12px;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3{margin:16px 0 8px;font-size:14px}
+.mt{margin-top:16px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute);font-weight:500}
+label.f i{font-style:normal;font-size:11px;color:#94a3b8;font-weight:400}
+input,select{font:inherit;padding:7px 9px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:var(--ink);width:100%;min-width:0}
+input[type=range]{padding:0;accent-color:var(--pri)}
+input:focus,select:focus{outline:2px solid var(--pri2);border-color:transparent}
+label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:13px}
+label.chk input{width:auto;margin:0}
+.btn{background:var(--pri);color:#fff;border:0;padding:8px 13px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;font-size:13px}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:#e2e8f0;color:var(--ink)}
+.btn.sm{padding:4px 8px;font-size:12px}
+.btn.del{background:transparent;color:#94a3b8;font-size:17px;padding:2px 8px}
+.btn.del:hover{color:var(--red)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:10.5px;text-transform:uppercase;color:var(--mute);letter-spacing:.03em;font-weight:600;background:#f8fafc}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.sum td{font-weight:700;border-top:2px solid var(--ink);background:#f8fafc}
+tr.info td{border-bottom:1px solid var(--line);padding-top:0;font-size:12px;color:var(--mute)}
+tr.main td{border-bottom:0}
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;white-space:nowrap}
+.t-z{background:#dcfce7;color:#166534}.t-s{background:#dbeafe;color:#1e40af}.t-a{background:#f1f5f9;color:#475569}.t-k{background:#fef3c7;color:#92400e}.t-n{background:#f1f5f9;color:#94a3b8}
+.rec{display:flex;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;background:#eff6ff;border-left:4px solid var(--blue);font-size:13px}
+.rec .ic{font-size:17px;line-height:1.2}
+.rec b{display:block;margin-bottom:2px}
+.rec.warn{border-color:var(--acc);background:#fffbeb}
+.rec.money{border-color:var(--green);background:#f0fdf4}
+.rec.risk{border-color:var(--red);background:#fef2f2}
+.kpi{padding:14px;border-radius:10px;background:#f8fafc;border:1px solid var(--line)}
+.kpi small{color:var(--mute);font-size:11.5px;display:block}
+.kpi .v{font-size:22px;font-weight:700;margin-top:2px}
+.kpi .d{font-size:11.5px;color:var(--mute)}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.muted{color:var(--mute)}
+.small{font-size:12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:5px;vertical-align:-1px}
+.stack{display:flex;height:30px;border-radius:8px;overflow:hidden;background:#e2e8f0}
+.stack div{height:100%}
+.row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.row>*{flex:1;min-width:140px}
+.slider{display:grid;grid-template-columns:1fr 90px;gap:8px;align-items:center}
+.prog{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px}
+.prog h4{margin:0 0 4px;font-size:14px}
+.prog a{color:var(--pri)}
+.empty{text-align:center;padding:40px;color:var(--mute)}
+.addbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.addbar select{width:auto;min-width:260px}
+.pill{display:inline-block;background:#f1f5f9;border-radius:6px;padding:1px 6px;margin-right:4px}
+svg text{font-family:inherit}
+footer{max-width:1320px;margin:0 auto;padding:0 20px 30px;color:var(--mute);font-size:11.5px}
+@media (max-width:700px){.g2{grid-template-columns:1fr}main{padding:12px}}
+@media print{
+  nav,.kpibar,header .actions,.noprint{display:none!important}
+  body{background:#fff}
+  .tab{display:block!important;page-break-after:always}
+  .card{break-inside:avoid;border-color:#ccc}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div>
+      <h1>🏠 Sanierungsplaner</h1>
+      <div class="sub">Kosten · Förderung (KfW / BAFA / Steuer) · Finanzierung · Energieersparnis</div>
+    </div>
+    <div class="actions">
+      <button onclick="exportJSON()">💾 Speichern als Datei</button>
+      <label>📂 Laden<input type="file" accept=".json" onchange="importJSON(event)" hidden></label>
+      <button onclick="exportCSV()">📊 CSV-Export</button>
+      <button onclick="window.print()">🖨️ Drucken / PDF</button>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+</header>
+<div class="kpibar" id="kpibar"></div>
+<main id="app"></main>
+<footer>Alle Angaben ohne Gewähr. Fördersätze Stand November 2026 (Recherche aus Ratgeberquellen) – vor Antragstellung bei KfW, BAFA, Energieberater und Steuerberater prüfen. Daten werden nur lokal in diesem Browser gespeichert.</footer>
+
+<script>
+/* ===================== Stammdaten ===================== */
+const GROUPS={huelle:'Gebäudehülle',anlage:'Anlagentechnik',heizung:'Heizung',ee:'Strom & E-Mobilität',planung:'Planung & Beratung',innen:'Innenausbau',sonst:'Sonstiges / Rohbau'};
+const GCOL={huelle:'#0f766e',anlage:'#0891b2',heizung:'#dc2626',ee:'#f59e0b',planung:'#7c3aed',innen:'#64748b',sonst:'#a8a29e'};
+const PROG={
+  em:{name:'BAFA – BEG Einzelmaßnahmen (Hülle / Anlagentechnik / Optimierung)',kurz:'BAFA BEG EM',url:'https://www.bafa.de/DE/Energie/Effiziente_Gebaeude/effiziente_gebaeude_node.html',art:'Zuschuss'},
+  heiz:{name:'KfW 458 – Heizungsförderung für Privatpersonen',kurz:'KfW 458',url:'https://www.kfw.de/458',art:'Zuschuss'},
+  fp:{name:'Fachplanung & Baubegleitung (Energieeffizienz-Experte)',kurz:'Fachplanung',url:'https://www.energie-effizienz-experten.de/',art:'Zuschuss'},
+  ebw:{name:'BAFA – Energieberatung für Wohngebäude (iSFP)',kurz:'BAFA EBW',url:'https://www.bafa.de/DE/Energie/Energieberatung/Energieberatung_Wohngebaeude/energieberatung_wohngebaeude_node.html',art:'Zuschuss'},
+  pv:{name:'KfW 270 – Erneuerbare Energien Standard (Kredit) + 0 % MwSt.',kurz:'KfW 270',url:'https://www.kfw.de/270',art:'Kredit'},
+  alt:{name:'KfW 159 – Altersgerecht Umbauen (Kredit) / Pflegekasse',kurz:'KfW 159',url:'https://www.kfw.de/159',art:'Kredit'},
+  none:{name:'Keine Bundesförderung – Handwerkerbonus §35a',kurz:'§35a',art:''}
+};
+// l=Label g=Gruppe p=Programm u=Einheit(m2=€/m² Wohnfläche, st=pauschal) rw=Richtwert ar=Arbeitsanteil% sp=Heizkostenersparnis% m=Mindestanforderung t=Tipp
+const KAT={
+ fassade:{l:'Fassadendämmung (WDVS / Vorhangfassade)',g:'huelle',p:'em',u:'m2',rw:[160,290],ar:60,sp:18,m:'U ≤ 0,20 W/(m²K)',t:'Gerüst gemeinsam mit Fenster, Dach & PV nutzen – spart 3.000–8.000 €. Wärmebrücken an Sockel & Fensteranschlüssen mitplanen.'},
+ dach:{l:'Dachdämmung / Dachsanierung',g:'huelle',p:'em',u:'m2',rw:[130,280],ar:55,sp:12,m:'U ≤ 0,14 W/(m²K)',t:'Bei neuer Eindeckung immer mitdämmen – Mehrkosten gering. Luftdichtheit per Blower-Door prüfen.'},
+ ogd:{l:'Oberste Geschossdecke',g:'huelle',p:'em',u:'m2',rw:[20,55],ar:50,sp:10,m:'U ≤ 0,14 W/(m²K)',t:'Günstigste Maßnahme mit hoher Wirkung; bei unbeheiztem Dachboden oft Pflicht nach GEG.'},
+ keller:{l:'Kellerdecke / Bodenplatte',g:'huelle',p:'em',u:'m2',rw:[20,55],ar:50,sp:6,m:'U ≤ 0,25 W/(m²K)',t:'Teilweise in Eigenleistung möglich – Material bleibt förderfähig, wenn ein Fachunternehmen bestätigt.'},
+ fenster:{l:'Fenster',g:'huelle',p:'em',u:'m2',rw:[110,220],ar:35,sp:10,m:'Uw ≤ 0,95 W/(m²K)',t:'Ohne Fassadendämmung ist ein Lüftungskonzept (DIN 1946-6) Pflicht – Schimmelgefahr. Folgt die Fassade später: Fenster in die künftige Dämmebene setzen.'},
+ tuer:{l:'Haus- & Außentüren',g:'huelle',p:'em',u:'st',rw:[3000,7000],ar:30,sp:2,m:'Ud ≤ 1,3 W/(m²K)',t:'Einbruchschutz (RC2) gleich mitdenken.'},
+ sonnen:{l:'Sommerlicher Wärmeschutz (Rollläden/Verschattung)',g:'huelle',p:'em',u:'st',rw:[2000,8000],ar:40,sp:1,m:'außenliegend, gtot ≤ 0,35',t:'Verhindert Überhitzung – wird mit Klimawandel immer wichtiger.'},
+ lueftung:{l:'Lüftungsanlage mit Wärmerückgewinnung',g:'anlage',p:'em',u:'m2',rw:[50,110],ar:45,sp:8,m:'WRG ≥ 80 %',t:'Sinnvoll bei dichter Hülle. Dezentral günstiger, zentral effizienter.'},
+ smart:{l:'Gebäudeautomation / Smart Home (Effizienz)',g:'anlage',p:'em',u:'st',rw:[1500,6000],ar:40,sp:5,m:'Systeme zur Verbrauchsoptimierung',t:'Smarte Thermostate & Energiemanagement amortisieren sich oft schnell.'},
+ heizopt:{l:'Heizungsoptimierung (hydraulischer Abgleich, Pumpe)',g:'anlage',p:'em',u:'st',rw:[800,4000],ar:60,sp:7,m:'Hydr. Abgleich nach Verfahren B',t:'Bei Bestandsheizung 5–15 % Ersparnis für wenig Geld.'},
+ wp:{l:'Wärmepumpe (Heizungstausch)',g:'heizung',p:'heiz',u:'st',rw:[25000,45000],ar:35,sp:30,m:'JAZ ≥ 3,0 · hydr. Abgleich',t:'Erfüllt die 65-%-EE-Regel des GEG. Erst Hülle optimieren → kleinere, günstigere WP. Vertrag mit aufschiebender Bedingung, dann Antrag in „Meine KfW“ VOR Baubeginn.'},
+ pellet:{l:'Biomasse / Pelletheizung',g:'heizung',p:'heiz',u:'st',rw:[25000,40000],ar:35,sp:15,m:'Staub ≤ 2,5 mg/m³',t:'Lagerraum einplanen; idealerweise mit Solarthermie kombinieren.'},
+ solarth:{l:'Solarthermie',g:'heizung',p:'heiz',u:'st',rw:[6000,14000],ar:40,sp:10,m:'Solar-Keymark',t:'Warmwasser + Heizungsunterstützung.'},
+ fernw:{l:'Anschluss Wärmenetz (Fernwärme)',g:'heizung',p:'heiz',u:'st',rw:[8000,20000],ar:50,sp:15,m:'Netz mit EE-Anteil',t:'Kommunale Wärmeplanung prüfen – kommt ein Netz in Ihre Straße?'},
+ flaeche:{l:'Heizflächen (Fußbodenheizung/Heizkörper) – Umfeldmaßnahme',g:'heizung',p:'heiz',u:'m2',rw:[40,95],ar:55,sp:3,m:'nur zusammen mit Heizungstausch',t:'Größere Heizflächen senken die Vorlauftemperatur → bessere Effizienz der Wärmepumpe.'},
+ pv:{l:'Photovoltaik-Anlage',g:'ee',p:'pv',u:'st',rw:[12000,22000],ar:30,sp:0,m:'0 % MwSt. bis 30 kWp',t:'Kein Bundes-Zuschuss, aber 0 % MwSt., KfW-270-Kredit und oft regionale Zuschüsse. Ideal in Kombination mit Wärmepumpe.'},
+ speicher:{l:'Batteriespeicher',g:'ee',p:'pv',u:'st',rw:[6000,11000],ar:20,sp:0,m:'',t:'Erhöht den Eigenverbrauch von ca. 30 % auf ca. 60 %. Teilweise Landes-/Kommunalförderung.'},
+ wallbox:{l:'Wallbox',g:'ee',p:'none',u:'st',rw:[1200,2800],ar:50,sp:0,m:'',t:'Als steuerbare Verbrauchseinrichtung (§14a EnWG) reduzierte Netzentgelte.'},
+ elektro:{l:'Elektroinstallation / Zählerschrank',g:'ee',p:'none',u:'m2',rw:[70,150],ar:60,sp:0,m:'',t:'Zählerschrank ist oft Voraussetzung für WP, PV und Wallbox – früh einplanen.'},
+ isfp:{l:'Energieberatung / iSFP',g:'planung',p:'ebw',u:'st',rw:[1500,3000],ar:100,sp:0,m:'Energieeffizienz-Experte (dena-Liste)',t:'Der iSFP verdoppelt die förderfähigen Kosten (60.000 €/WE) und bringt +5 % auf den Anteil über 30.000 €.'},
+ fachpl:{l:'Fachplanung & Baubegleitung',g:'planung',p:'fp',u:'st',rw:[2000,8000],ar:100,sp:0,m:'Pflicht für BAFA-Hüllenmaßnahmen',t:'50 % Zuschuss. Der Experte erstellt Bestätigung zum Antrag und Verwendungsnachweis.'},
+ architekt:{l:'Architekt / Statik / Genehmigungen',g:'planung',p:'none',u:'st',rw:[3000,15000],ar:100,sp:0,m:'',t:'Bei Eingriffen ins Tragwerk oder Bauantrag erforderlich.'},
+ bad:{l:'Badsanierung',g:'innen',p:'none',u:'st',rw:[15000,35000],ar:55,sp:0,m:'',t:'Bodengleiche Dusche → KfW 159 bzw. Pflegekasse (bis 4.180 € je Person mit Pflegegrad).'},
+ barriere:{l:'Barrierereduzierung (Rampe, Türen, Lift)',g:'innen',p:'alt',u:'st',rw:[5000,25000],ar:50,sp:0,m:'Mindestanforderungen KfW 159',t:'KfW-159-Kredit; Pflegekasse bis 4.180 € je Person mit Pflegegrad.'},
+ kueche:{l:'Küche',g:'innen',p:'none',u:'st',rw:[8000,25000],ar:20,sp:0,m:'',t:'Montagekosten über §35a absetzbar.'},
+ boden:{l:'Bodenbeläge',g:'innen',p:'none',u:'m2',rw:[50,120],ar:50,sp:0,m:'',t:''},
+ innen:{l:'Innenputz / Trockenbau',g:'innen',p:'none',u:'m2',rw:[35,100],ar:65,sp:0,m:'',t:''},
+ maler:{l:'Malerarbeiten',g:'innen',p:'none',u:'m2',rw:[20,45],ar:75,sp:0,m:'',t:'Arbeitskosten über §35a absetzbar.'},
+ schad:{l:'Schadstoffsanierung (Asbest, PCB, KMF)',g:'sonst',p:'none',u:'st',rw:[3000,20000],ar:80,sp:0,m:'',t:'Bei Baujahr vor 1993 vor Abbruch ein Schadstoffgutachten (300–1.500 €) einholen.'},
+ entk:{l:'Entkernung / Abbruch / Entsorgung',g:'sonst',p:'none',u:'m2',rw:[25,80],ar:80,sp:0,m:'',t:'Container- und Deponiekosten regional sehr unterschiedlich.'},
+ feucht:{l:'Feuchtesanierung / Kellerabdichtung',g:'sonst',p:'none',u:'st',rw:[5000,30000],ar:65,sp:0,m:'',t:'Erst Ursache klären (Gutachter), dann dämmen.'},
+ aussen:{l:'Außenanlagen / Garten',g:'sonst',p:'none',u:'st',rw:[3000,20000],ar:60,sp:0,m:'',t:'Gartenarbeiten zählen als Handwerkerleistung.'},
+ sonst:{l:'Sonstiges',g:'sonst',p:'none',u:'st',rw:[0,0],ar:50,sp:0,m:'',t:''}
+};
+const HEAT_MAIN=['wp','pellet','solarth','fernw'];
+const TEMPLATES={
+  komplett:{l:'Komplettsanierung EFH',k:['entk','fassade','dach','fenster','tuer','keller','wp','flaeche','lueftung','pv','speicher','elektro','bad','boden','innen','maler','isfp','fachpl']},
+  energie:{l:'Energetische Sanierung',k:['isfp','fachpl','fassade','dach','fenster','keller','wp','pv']},
+  heizung:{l:'Heizungstausch + PV',k:['wp','flaeche','heizopt','pv','speicher','elektro']},
+  innen:{l:'Innenausbau / Modernisierung',k:['bad','kueche','boden','innen','maler','elektro']}
+};
+const DEFAULT_S={
+  begSatz:15,isfpBonus:5,isfpSchwelle:30000,emMaxOhne:30000,emMaxMit:60000,
+  heizGrund:30,klimaBonus:16,eink1Grenze:30000,eink1:40,eink2Grenze:40000,eink2:30,eink3Grenze:50000,eink3:10,heizMaxQuote:80,heizMax1:28000,heizMaxW:15000,
+  fpSatz:50,fpMaxEFH:5000,fpMaxWE:2000,ebwSatz:50,ebwMaxEFH:650,ebwMaxMFH:850,
+  st35cSatz:20,st35cMax:40000,st35aSatz:20,st35aMax:1200,
+  eh85:5,eh70:10,eh55:15,eh40:20,ehEE:5,ehWPB:10,ehMaxWE:120000,ehMaxWEee:150000,
+  zuschMonat:9,einspeis:0.078
+};
+function defaultState(){return{
+  projekt:{name:'Mein Sanierungsprojekt',wf:140,we:1,baujahr:1975,selbst:true,zve:55000,isfp:false,klima:true,jahre:1,puffer:12,auto:'max'},
+  posten:[],
+  finanz:{ek:30000,zuschSond:true,netto:5200,
+    a:{zins:3.8,modus:'tilgung',tilg:2.5,lz:20,bind:10,anschl:4.8,sond:0},
+    b:{aktiv:false,betrag:50000,zins:3.2,modus:'laufzeit',tilg:2,lz:20,bind:10,anschl:4.8,sond:0}},
+  energie:{heiz:3200,strom:1400,strompreis:0.34,steig:3,co2:true},
+  eh:{ziel:'eh70',ee:false,wpb:false},
+  S:{...DEFAULT_S}
+};}
+
+/* ===================== State ===================== */
+const LS='sanierungsplaner_v1';
+let state,tab='dash';
+function save(){localStorage.setItem(LS,JSON.stringify(state))}
+
+/* ===================== Helpers ===================== */
+const fE=new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const eur=v=>fE.format(Math.round(v||0));
+const num=(v,d=0)=>(+v||0).toLocaleString('de-DE',{maximumFractionDigits:d,minimumFractionDigits:d});
+const pct=(v,d=1)=>num(v,d)+' %';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const getP=(o,p)=>p.split('.').reduce((a,k)=>a?.[k],o);
+const setP=(o,p,v)=>{const k=p.split('.');const last=k.pop();k.reduce((a,x)=>a[x],o)[last]=v};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const sum=(a,f=x=>x)=>a.reduce((s,x)=>s+(+f(x)||0),0);
+const YEAR=new Date().getFullYear();
+function richtwert(k){const K=KAT[k];if(!K)return 0;const m=(K.rw[0]+K.rw[1])/2;return K.u==='m2'?Math.round(m*(state.projekt.wf||0)/100)*100:m}
+function rwText(k){const K=KAT[k];if(!K||!K.rw[1])return'';const f=K.u==='m2'?(state.projekt.wf||0):1;return `${eur(K.rw[0]*f)} – ${eur(K.rw[1]*f)}`+(K.u==='m2'?` <span class="muted">(${K.rw[0]}–${K.rw[1]} €/m² Wfl.)</span>`:'')}
+function newPosten(k){const K=KAT[k]||KAT.sonst;return{id:uid(),kat:k,name:K.l,kosten:richtwert(k),ar:K.ar,el:false,status:'geplant',weg:'auto'}}
+function loadTemplate(t,silent){
+  if(!silent&&state.posten.length&&!confirm('Vorlage hinzufügen? Bestehende Posten bleiben erhalten.'))return;
+  TEMPLATES[t].k.forEach(k=>state.posten.push(newPosten(k)));save();if(!silent)render();
+}
+
+/* ===================== Förder-Engine ===================== */
+function heizRate(){const P=state.projekt,S=state.S;let r=S.heizGrund,parts=[`Grund ${S.heizGrund} %`];
+  if(P.selbst){ if(P.klima){r+=S.klimaBonus;parts.push(`Klima-Bonus ${S.klimaBonus} %`)}
+    const z=+P.zve;let e=0;if(z<=S.eink1Grenze)e=S.eink1;else if(z<=S.eink2Grenze)e=S.eink2;else if(z<=S.eink3Grenze)e=S.eink3;
+    if(e){r+=e;parts.push(`Einkommens-Bonus ${e} %`)} }
+  const capped=Math.min(r,S.heizMaxQuote);if(capped<r)parts.push(`gedeckelt auf ${S.heizMaxQuote} %`);
+  return{rate:capped/100,txt:parts.join(' + ')};
+}
+function grantClass(c,costs,opts={}){
+  const P=state.projekt,S=state.S,WE=Math.max(1,+P.we||1),E=sum(costs);
+  const isfp=opts.isfp??P.isfp;
+  if(!E)return 0;
+  if(c==='em'){const cap=(isfp?S.emMaxMit:S.emMaxOhne)*WE,Ef=Math.min(E,cap);return Ef*S.begSatz/100+(isfp?Math.max(0,Ef-S.isfpSchwelle*WE)*S.isfpBonus/100:0)}
+  if(c==='heiz'){const cap=S.heizMax1+(WE-1)*S.heizMaxW;return Math.min(E,cap)*heizRate().rate}
+  if(c==='fp'){const cap=WE<=2?S.fpMaxEFH:Math.min(S.fpMaxWE*WE,20000);return Math.min(E,cap)*S.fpSatz/100}
+  if(c==='ebw'){return Math.min(E*S.ebwSatz/100,WE<=2?S.ebwMaxEFH:S.ebwMaxMFH)}
+  return 0;
+}
+const GRANTABLE=['em','heiz','fp','ebw'];
+function foerder(){
+  const P=state.projekt,S=state.S;
+  const steuerOK=P.selbst&&(YEAR-(+P.baujahr||YEAR))>=10;
+  const hasMainHeat=state.posten.some(p=>HEAT_MAIN.includes(p.kat)&&+p.kosten>0);
+  const it=state.posten.map(p=>{const K=KAT[p.kat]||KAT.sonst;let c=K.p;if(p.kat==='flaeche'&&!hasMainHeat)c='none';return{p,K,c,kosten:+p.kosten||0,weg:null,zuschuss:0,st35c:0,st35a:0,why:''}});
+  const v35c=x=>(['ebw','fp'].includes(x.c)?0.5:S.st35cSatz/100)*x.kosten;
+  // Wege festlegen
+  for(const c of GRANTABLE){
+    const grp=it.filter(x=>x.c===c);
+    const forcedZ=grp.filter(x=>x.p.weg==='zuschuss'||(x.p.weg==='auto'&&x.p.el));
+    const auto=grp.filter(x=>x.p.weg==='auto'&&!x.p.el);
+    grp.forEach(x=>{
+      if(x.p.weg==='keine')x.weg='keine';
+      else if(x.p.weg==='steuer'){x.weg=(steuerOK&&!x.p.el)?'35c':'keine';if(x.weg==='keine')x.why=x.p.el?'§35c nur bei Ausführung durch Fachbetrieb.':'§35c nur bei Selbstnutzung & Gebäude ≥ 10 Jahre.'}
+    });
+    forcedZ.forEach(x=>x.weg='zuschuss');
+    if(auto.length){
+      const gZ=grantClass(c,[...forcedZ,...auto].map(x=>x.kosten))-grantClass(c,forcedZ.map(x=>x.kosten));
+      const gS=sum(auto,v35c);
+      const useS=steuerOK&&P.auto==='max'&&gS>gZ*1.0001;
+      auto.forEach(x=>{x.weg=useS?'35c':'zuschuss';x.why=steuerOK?`Automatik: ${useS?'Steuerbonus §35c':'Zuschuss'} gewählt (Zuschuss ≈ ${eur(gZ)} vs. §35c ≈ ${eur(gS)} für diese Programmgruppe).`:''});
+    }
+  }
+  it.forEach(x=>{ if(x.weg)return;
+    if(x.p.weg==='keine'||x.p.el){x.weg='keine';return}
+    x.weg=P.selbst?'35a':'keine';
+    if(x.p.kat==='flaeche'&&!hasMainHeat)x.why='Heizflächen werden nur zusammen mit einem Heizungstausch (WP, Pellet, Wärmenetz …) gefördert.';
+  });
+  // Zuschüsse verteilen
+  const byClass={};
+  for(const c of GRANTABLE){const g=it.filter(x=>x.c===c&&x.weg==='zuschuss');const tot=grantClass(c,g.map(x=>x.kosten));const E=sum(g,x=>x.kosten);byClass[c]={E,tot};g.forEach(x=>x.zuschuss=E?tot*x.kosten/E:0)}
+  // §35c
+  const s35=it.filter(x=>x.weg==='35c');let t35=sum(s35,v35c);const f35=t35>S.st35cMax?S.st35cMax/t35:1;s35.forEach(x=>x.st35c=v35c(x)*f35);t35=Math.min(t35,S.st35cMax);
+  // §35a
+  const s5=it.filter(x=>x.weg==='35a');const lab=sum(s5,x=>x.kosten*(+x.p.ar||0)/100);const raw5=lab*S.st35aSatz/100;const cap5=S.st35aMax*Math.max(1,+P.jahre||1);const f5=raw5>cap5?cap5/raw5:1;
+  s5.forEach(x=>x.st35a=x.kosten*(+x.p.ar||0)/100*S.st35aSatz/100*f5);
+  // iSFP-Gewinn
+  const emItems=it.filter(x=>x.c==='em'&&x.weg!=='keine').map(x=>x.kosten);
+  const isfpGain=P.isfp?0:grantClass('em',emItems,{isfp:true})-grantClass('em',emItems,{isfp:false});
+  const zuschuss=sum(it,x=>x.zuschuss),st35c=sum(it,x=>x.st35c),st35a=sum(it,x=>x.st35a);
+  return{it,byClass,zuschuss,st35c,st35a,raw5,cap5,lab,steuerOK,hasMainHeat,isfpGain,emSum:sum(emItems)};
+}
+
+/* ===================== Finanzierung ===================== */
+function annuity(B,r,n){return r>0?B*r/(1-Math.pow(1+r,-n)):B/n}
+function sim(L,B,extras=[]){
+  if(!(B>0))return null;
+  const r=(+L.zins||0)/100/12;let n,rate;
+  if(L.modus==='laufzeit'){n=Math.max(1,(+L.lz||1)*12);rate=annuity(B,r,n)}
+  else{rate=B*((+L.zins||0)+Math.max(0.1,+L.tilg||0))/100/12;n=r>0?Math.ceil(-Math.log(1-r*B/rate)/Math.log(1+r)):Math.ceil(B/rate)}
+  const bindM=Math.round((+L.bind||0)*12);
+  let rest=B,m=0,zSum=0,cr=r,crate=rate,rateAfter=null,restBind=null,rows=[],y={zins:0,tilg:0,sond:0,rate:0};
+  while(rest>0.5&&m<720){
+    m++;
+    if(m===bindM+1){cr=(+L.anschl||0)/100/12;crate=annuity(rest,cr,Math.max(12,n-bindM));rateAfter=crate}
+    const z=rest*cr;let t=Math.min(Math.max(crate-z,0),rest);rest-=t;zSum+=z;y.zins+=z;y.tilg+=t;y.rate+=z+t;
+    for(const e of extras)if(e.m===m){const s=Math.min(e.amt,rest);rest-=s;y.sond+=s}
+    if(m%12===0&&L.sond>0){const s=Math.min(+L.sond,rest);rest-=s;y.sond+=s}
+    if(m===bindM)restBind=rest;
+    if(m%12===0||rest<=0.5){rows.push({j:Math.ceil(m/12),...y,rest:Math.max(0,rest)});y={zins:0,tilg:0,sond:0,rate:0}}
+  }
+  return{B,rate,n,rateAfter,restBind:restBind??0,zSum,months:m,rows};
+}
+function finanz(F){
+  const P=state.projekt,Fi=state.finanz;
+  const netto=sum(state.posten,p=>+p.kosten||0);
+  const puffer=netto*(+P.puffer||0)/100;
+  const total=netto+puffer;
+  const ek=Math.min(+Fi.ek||0,total);
+  const bedarf=Math.max(0,total-ek-(Fi.zuschSond?0:F.zuschuss));
+  const bB=Fi.b.aktiv?Math.min(+Fi.b.betrag||0,bedarf):0;
+  const aB=Math.max(0,bedarf-bB);
+  const extrasA=Fi.zuschSond&&F.zuschuss>0?[{m:+state.S.zuschMonat||9,amt:F.zuschuss}]:[];
+  const A=sim(Fi.a,aB,extrasA),B=sim(Fi.b,bB);
+  const rate=(A?.rate||0)+(B?.rate||0);
+  const zSum=(A?.zSum||0)+(B?.zSum||0);
+  const years=Math.max(A?.rows.length||0,B?.rows.length||0);
+  const rows=[];for(let i=0;i<years;i++){const a=A?.rows[i]||{zins:0,tilg:0,sond:0,rate:0,rest:0},b=B?.rows[i]||{zins:0,tilg:0,sond:0,rate:0,rest:0};rows.push({j:i+1,zins:a.zins+b.zins,tilg:a.tilg+b.tilg,sond:a.sond+b.sond,rate:a.rate+b.rate,restA:a.rest,restB:b.rest,rest:a.rest+b.rest})}
+  return{netto,puffer,total,ek,bedarf,aB,bB,A,B,rate,zSum,rows,quote:Fi.netto>0?rate/Fi.netto:0};
+}
+
+/* ===================== Energie ===================== */
+function energie(F,Fin){
+  const E=state.energie,S=state.S;
+  const per=[];let remain=1;
+  state.posten.forEach(p=>{const K=KAT[p.kat];if(K&&K.sp>0&&+p.kosten>0){remain*=1-K.sp/100;per.push({p,K,s:K.sp})}});
+  const heizSave=(+E.heiz||0)*(1-remain);
+  per.forEach(x=>x.eur=(+E.heiz||0)*x.s/100);
+  const scale=sum(per,x=>x.eur)?heizSave/sum(per,x=>x.eur):0;per.forEach(x=>x.eur*=scale);
+  const pvCost=sum(state.posten.filter(p=>p.kat==='pv'),p=>+p.kosten||0);
+  const hasSp=state.posten.some(p=>p.kat==='speicher'&&+p.kosten>0);
+  let pvSave=0,kwp=0,yieldK=0;
+  if(pvCost>0){kwp=pvCost/1600;yieldK=kwp*950;const ev=hasSp?0.6:0.3;const need=(+E.strom||0)/(+E.strompreis||0.34)+(state.posten.some(p=>p.kat==='wp')?3500:0);
+    const self=Math.min(yieldK*ev,need);pvSave=self*(+E.strompreis||0)+(yieldK-self)*S.einspeis}
+  const year=heizSave+pvSave;
+  const enCost=sum(F.it.filter(x=>x.K.sp>0||['pv','speicher'].includes(x.p.kat)),x=>x.kosten-x.zuschuss-x.st35c);
+  const cum=[];let c=0,pay=null;for(let j=1;j<=30;j++){c+=year*Math.pow(1+(+E.steig||0)/100,j-1);cum.push([j,c]);if(pay===null&&c>=enCost)pay=j}
+  const co2t=(+E.heiz||0)/0.12*0.2/1000*(1-remain);
+  return{per,heizSave,pvSave,kwp,yieldK,year,enCost,cum,pay,co2t,remain};
+}
+
+/* ===================== Empfehlungen ===================== */
+function recs(F,Fin,En){
+  const P=state.projekt,S=state.S,r=[],has=k=>state.posten.some(p=>p.kat===k&&+p.kosten>0),hasG=g=>state.posten.some(p=>KAT[p.kat]?.g===g&&+p.kosten>0);
+  const add=(type,title,text)=>r.push({type,title,text});
+  if(!state.posten.length){add('info','Starten Sie mit Ihren Posten','Wählen Sie im Reiter „Posten“ eine Vorlage oder fügen Sie einzelne Gewerke hinzu. Richtwerte werden automatisch anhand der Wohnfläche vorgeschlagen.');return r}
+  if(F.zuschuss>0)add('risk','Antrag VOR Auftrag!','Zuschüsse von KfW/BAFA gibt es nur, wenn der Antrag vor Vorhabenbeginn gestellt wird. Planung & Angebote sind erlaubt; Verträge nur mit aufschiebender/auflösender Bedingung der Förderzusage abschließen.');
+  const emZ=F.it.some(x=>x.c==='em'&&x.weg==='zuschuss'&&x.K.g==='huelle');
+  if(emZ&&!has('fachpl'))add('warn','Energieeffizienz-Experte einplanen','Für BAFA-Zuschüsse an der Gebäudehülle ist ein Energieeffizienz-Experte Pflicht. Fachplanung & Baubegleitung wird zu 50 % gefördert – als Posten hinzufügen.');
+  if(!P.isfp&&F.isfpGain>0){const net=2200-Math.min(2200*S.ebwSatz/100,S.ebwMaxEFH);
+    add(F.isfpGain>net?'money':'info',`Individueller Sanierungsfahrplan (iSFP): +${eur(F.isfpGain)} Förderung`,`Mit einem iSFP steigen die förderfähigen Kosten der Einzelmaßnahmen auf ${eur(S.emMaxMit)}/WE und es gibt +${S.isfpBonus} % auf den Anteil über ${eur(S.isfpSchwelle)}. Eigenanteil der Beratung nach BAFA-Zuschuss ca. ${eur(net)} → ${F.isfpGain>net?'lohnt sich!':'rechnet sich bei Ihren Kosten noch nicht.'}`)}
+  if(F.emSum>(P.isfp?S.emMaxMit:S.emMaxOhne)*(+P.we||1))add('info','Förderdeckel der Einzelmaßnahmen erreicht',`Ihre Hüllen-/Anlagenkosten (${eur(F.emSum)}) liegen über dem Jahres-Höchstbetrag. Tipp: Maßnahmen auf zwei Kalenderjahre verteilen – der Deckel gilt pro Jahr.`);
+  if(hasG('heizung')&&!hasG('huelle'))add('info','Erst Hülle, dann Heizung prüfen','Wer zuerst dämmt, braucht eine kleinere (günstigere) Wärmepumpe mit besserer Effizienz. Mindestens Heizlastberechnung (DIN EN 12831) machen lassen.');
+  if(has('fenster')&&!has('fassade'))add('warn','Fenster ohne Fassadendämmung','Lüftungskonzept nach DIN 1946-6 erforderlich, sonst Schimmelrisiko. Fenster so setzen, dass eine spätere Fassadendämmung anschließen kann.');
+  if((has('fassade')||has('dach'))&&!has('pv'))add('money','Gerüst doppelt nutzen: PV mitplanen','Wenn ohnehin ein Gerüst steht, ist die PV-Montage deutlich günstiger. 0 % MwSt. bis 30 kWp.');
+  if(has('wp')&&!has('pv'))add('info','Wärmepumpe + PV','Eigener PV-Strom senkt die Betriebskosten der WP spürbar. Zusätzlich günstigen WP-Stromtarif und §14a-Netzentgeltreduzierung nutzen.');
+  if(F.it.some(x=>x.c==='heiz'&&x.weg==='zuschuss')){const h=heizRate();add('money',`Heizungsförderung: ${pct(h.rate*100,0)} Zuschuss`,h.txt+'. Klima-Bonus nur für Selbstnutzer beim Austausch funktionstüchtiger Öl-, Kohle-, Nachtspeicher- oder >20 Jahre alter Gasheizungen; der Bonus sinkt laut Ratgebern stufenweise ab 2027 – früh beantragen lohnt.');
+    const z=+P.zve;[[S.eink1Grenze,S.eink1],[S.eink2Grenze,S.eink2],[S.eink3Grenze,S.eink3]].forEach(([g,b])=>{if(P.selbst&&z>g&&z<=g+5000)add('money','Knapp über Einkommensgrenze',`Ihr zvE liegt nur ${eur(z-g)} über ${eur(g)} (Bonus ${b} %). Maßgeblich ist der Durchschnitt des 2. und 3. Jahres vor Antrag – Kinderfreibeträge, Werbungskosten etc. prüfen.`)})}
+  if(F.st35c>0)add('info',`Steuerbonus §35c: ${eur(F.st35c)}`,'Wird über 3 Jahre verteilt (7 % / 7 % / 6 %), max. 40.000 € je Objekt, nur bei Selbstnutzung, Bescheinigung des Fachbetriebs, Maßnahme abgeschlossen bis Ende 2029. Setzt ausreichende Steuerlast voraus! Nicht mit Zuschuss für dieselbe Maßnahme kombinierbar.');
+  if(F.raw5>F.cap5)add('money','Handwerkerbonus besser verteilen',`Ihre Arbeitskosten ergäben ${eur(F.raw5)} Steuerermäßigung, gedeckelt auf ${eur(F.cap5)}. Rechnungen/Zahlungen auf mehrere Jahre verteilen (Deckel ${eur(state.S.st35aMax)} pro Jahr).`);
+  if(!P.selbst)add('info','Vermietete Immobilie','§35a/§35c gelten nicht. Stattdessen Erhaltungsaufwand als Werbungskosten (ggf. auf 2–5 Jahre verteilen) oder Herstellungskosten über AfA. Achtung: anschaffungsnahe Herstellungskosten (15-%-Grenze in 3 Jahren). Heizungsförderung nur Grundförderung.');
+  if((+P.puffer||0)<10)add('warn','Puffer zu knapp',`Bei Sanierungen sind 10–20 % Reserve üblich (Altbau-Überraschungen, Preissteigerungen). Aktuell: ${P.puffer} %.`);
+  if(+P.baujahr<1993&&(has('entk')||has('fassade')||has('dach'))&&!has('schad'))add('risk','Schadstoffe prüfen','Bei Baujahr vor 1993 können Asbest (Putz, Kleber, Eternit), PCB oder alte Mineralwolle verbaut sein. Vor Abbruch Gutachten einholen – sonst drohen Baustopp und Mehrkosten.');
+  if(Fin.quote>0.4)add('risk','Monatliche Belastung sehr hoch',`Die Rate beträgt ${pct(Fin.quote*100,0)} Ihres Haushaltsnettos. Banken akzeptieren meist max. 35–40 %. Mehr Eigenkapital, längere Laufzeit oder Maßnahmen strecken.`);
+  else if(Fin.quote>0.3)add('warn','Belastung beachten',`Die Rate entspricht ${pct(Fin.quote*100,0)} Ihres Haushaltsnettos – noch tragbar, aber Puffer für Rücklagen einplanen.`);
+  if(state.finanz.zuschSond&&F.zuschuss>0)add('info','Zuschüsse vorfinanzieren',`Die ${eur(F.zuschuss)} Zuschüsse werden erst nach Abschluss & Verwendungsnachweis ausgezahlt. Im Plan als Sondertilgung in Monat ${state.S.zuschMonat} angesetzt – Darlehen mit kostenfreier Sondertilgung vereinbaren!`);
+  if(Fin.bedarf>0&&F.zuschuss>0&&!state.finanz.b.aktiv)add('money','KfW-Ergänzungskredit prüfen','Mit Förderzusage gibt es den KfW-Ergänzungskredit (358/359) bis 120.000 €/WE – bei zu versteuerndem Haushaltseinkommen bis 90.000 € mit Zinsverbilligung. Im Reiter „Finanzierung“ als Darlehen B aktivieren und mit Bankangebot vergleichen.');
+  const eh=ehCalc(F);if(eh.tz>eh.emRoute*1.1&&eh.kosten>60000)add('money','Effizienzhaus-Sanierung könnte mehr bringen',`Bei Komplettsanierung zum ${eh.label} wären ca. ${eur(eh.tz)} Tilgungszuschuss (KfW 261) möglich – gegenüber ${eur(eh.emRoute)} über Einzelmaßnahmen. Details im Reiter „Förderung“.`);
+  if(state.posten.some(p=>p.status==='geplant'&&+p.kosten>5000))add('info','Mindestens 3 Angebote einholen','Preisunterschiede von 20–40 % zwischen Handwerksbetrieben sind normal. Angebote immer auf gleichen Leistungsumfang prüfen.');
+  if(has('wp')||has('heizopt'))add('info','Hydraulischer Abgleich','Ist Fördervoraussetzung und spart zusätzlich 5–10 % Energie.');
+  add('info','Regionale Förderung zusätzlich nutzen','Viele Bundesländer, Kommunen und Stadtwerke fördern zusätzlich (z. B. PV-Speicher, Dämmung, Beratung). Suche: foerderdatenbank.de sowie Landesförderbank (L-Bank, NRW.BANK, LfA, IBB …) und Website Ihrer Stadt.');
+  return r;
+}
+function ehCalc(F){
+  const P=state.projekt,S=state.S,WE=Math.max(1,+P.we||1),e=state.eh;
+  const kosten=sum(F.it.filter(x=>['huelle','anlage','heizung'].includes(x.K.g)),x=>x.kosten);
+  const max=(e.ee?S.ehMaxWEee:S.ehMaxWE)*WE;const kredit=Math.min(kosten,max);
+  const pctTZ=(+S[e.ziel]||0)+(e.ee?S.ehEE:0)+(e.wpb?S.ehWPB:0);
+  const label={eh85:'Effizienzhaus 85',eh70:'Effizienzhaus 70',eh55:'Effizienzhaus 55',eh40:'Effizienzhaus 40'}[e.ziel]+(e.ee?' EE':'');
+  const emRoute=(F.byClass.em?.tot||0)+(F.byClass.heiz?.tot||0);
+  return{kosten,max,kredit,pctTZ,tz:kredit*pctTZ/100,label,emRoute};
+}
+
+/* ===================== Charts (SVG) ===================== */
+function donut(data,size=200){
+  const tot=sum(data,d=>d.v);if(!tot)return'<div class="empty">Noch keine Kosten</div>';
+  let a=-Math.PI/2;const R=size/2,r=R*0.62,cx=R,cy=R;
+  const paths=data.filter(d=>d.v>0).map(d=>{const f=d.v/tot,a2=a+f*Math.PI*2-1e-6,l=f>0.5?1:0;
+    const p=`M${cx+R*Math.cos(a)},${cy+R*Math.sin(a)} A${R},${R} 0 ${l} 1 ${cx+R*Math.cos(a2)},${cy+R*Math.sin(a2)} L${cx+r*Math.cos(a2)},${cy+r*Math.sin(a2)} A${r},${r} 0 ${l} 0 ${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}Z`;a=a2+1e-6;
+    return`<path d="${p}" fill="${d.c}"><title>${esc(d.l)}: ${eur(d.v)} (${pct(f*100)})</title></path>`}).join('');
+  return`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${paths}<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="12" fill="#64748b">Summe</text><text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="16" font-weight="700" fill="#1d2733">${eur(tot)}</text></svg>
+  <div style="flex:1;min-width:180px">${data.filter(d=>d.v>0).sort((x,y)=>y.v-x.v).map(d=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed #e2e8f0;font-size:12.5px"><span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${d.c};margin-right:6px"></span>${esc(d.l)}</span><b>${eur(d.v)}</b></div>`).join('')}</div></div>`;
+}
+const kfmt=v=>Math.abs(v)>=1000?num(v/1000,0)+' T€':num(v,0)+' €';
+function lineChart(series,{w=680,h=260,hline=null,hlabel=''}={}){
+  const pl=56,pr=12,pt=12,pb=28;const all=series.flatMap(s=>s.pts);if(!all.length)return'';
+  const xmax=Math.max(...all.map(p=>p[0]),1),ymax=Math.max(...all.map(p=>p[1]),hline||0,1)*1.08;
+  const X=x=>pl+(x/xmax)*(w-pl-pr),Y=y=>pt+(1-y/ymax)*(h-pt-pb);
+  let g='';for(let i=0;i<=4;i++){const v=ymax*i/4;g+=`<line x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${pl-6}" y="${Y(v)+4}" text-anchor="end" font-size="10.5" fill="#64748b">${kfmt(v)}</text>`}
+  const step=Math.max(1,Math.ceil(xmax/10));for(let x=0;x<=xmax;x+=step)g+=`<text x="${X(x)}" y="${h-8}" text-anchor="middle" font-size="10.5" fill="#64748b">${x}</text>`;
+  if(hline!=null)g+=`<line x1="${pl}" x2="${w-pr}" y1="${Y(hline)}" y2="${Y(hline)}" stroke="#dc2626" stroke-dasharray="5 4"/><text x="${w-pr}" y="${Y(hline)-5}" text-anchor="end" font-size="11" fill="#dc2626">${esc(hlabel)}</text>`;
+  const p=series.map(s=>`<path d="${s.pts.map((q,i)=>(i?'L':'M')+X(q[0])+','+Y(q[1])).join(' ')}" fill="none" stroke="${s.c}" stroke-width="2.5"/>${s.fill?`<path d="M${X(s.pts[0][0])},${Y(0)} ${s.pts.map(q=>'L'+X(q[0])+','+Y(q[1])).join(' ')} L${X(s.pts.at(-1)[0])},${Y(0)}Z" fill="${s.c}" opacity=".12"/>`:''}`).join('');
+  return`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">${g}${p}</svg><div class="legend">${series.map(s=>`<span style="--c:${s.c}">${esc(s.n)}</span>`).join('')}${hline!=null?`<span style="--c:#dc2626">${esc(hlabel)}</span>`:''}</div>`;
+}
+function colChart(rows,keys,{w=680,h=240}={}){
+  if(!rows.length)return'';const pl=56,pr=8,pt=10,pb=26;
+  const ymax=Math.max(...rows.map(r=>sum(keys,k=>r[k.k])),1)*1.08;const bw=(w-pl-pr)/rows.length;
+  const Y=y=>pt+(1-y/ymax)*(h-pt-pb);let g='';
+  for(let i=0;i<=4;i++){const v=ymax*i/4;g+=`<line x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2e8f0"/><text x="${pl-6}" y="${Y(v)+4}" text-anchor="end" font-size="10.5" fill="#64748b">${kfmt(v)}</text>`}
+  const step=Math.max(1,Math.ceil(rows.length/15));
+  rows.forEach((r,i)=>{let acc=0;keys.forEach(k=>{const v=r[k.k]||0;if(v>0){g+=`<rect x="${pl+i*bw+bw*0.15}" y="${Y(acc+v)}" width="${bw*0.7}" height="${Y(acc)-Y(acc+v)}" fill="${k.c}"><title>Jahr ${r.j} – ${k.n}: ${eur(v)}</title></rect>`;acc+=v}});
+    if(i%step===0)g+=`<text x="${pl+i*bw+bw/2}" y="${h-8}" text-anchor="middle" font-size="10.5" fill="#64748b">${r.j}</text>`});
+  return`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">${g}</svg><div class="legend">${keys.map(k=>`<span style="--c:${k.c}">${k.n}</span>`).join('')}</div>`;
+}
+
+/* ===================== Form-Helfer ===================== */
+function inp(path,label,o={}){
+  const v=getP(state,path);const t=o.type||'number';
+  if(t==='check')return`<label class="f chk"><input type="checkbox" data-bind="${path}" ${v?'checked':''}> ${label}</label>`;
+  if(t==='select')return`<label class="f">${label}<select data-bind="${path}">${o.options.map(([a,b])=>`<option value="${a}" ${String(v)===String(a)?'selected':''}>${b}</option>`).join('')}</select>${o.help?`<i>${o.help}</i>`:''}</label>`;
+  return`<label class="f">${label}<input type="${t}" data-bind="${path}" value="${esc(v)}" ${o.step?`step="${o.step}"`:''} min="${o.min??0}">${o.help?`<i>${o.help}</i>`:''}</label>`;
+}
+function slider(path,label,min,max,step,suffix){const v=getP(state,path);return`<label class="f">${label}<div class="slider"><input type="range" data-bind="${path}" min="${min}" max="${max}" step="${step}" value="${v}"><input type="number" data-bind="${path}" step="${step}" value="${v}"></div></label>`}
+const WEG_TAG={zuschuss:['Zuschuss','t-z'],'35c':['Steuer §35c','t-s'],'35a':['§35a Handwerker','t-a'],keine:['keine','t-n']};
+
+/* ===================== Tabs ===================== */
+const TABS=[['dash','📊 Übersicht'],['projekt','🏡 Projekt'],['posten','🧾 Posten'],['foerder','💶 Förderung'],['finanz','🏦 Finanzierung'],['energie','⚡ Energie & Amortisation'],['settings','⚙️ Einstellungen']];
+let C={};
+function compute(){const F=foerder(),Fin=finanz(F),En=energie(F,Fin);C={F,Fin,En,R:recs(F,Fin,En)};return C}
+
+function kpibar(){const{F,Fin,En}=C;
+  document.getElementById('kpibar').innerHTML=[
+   ['Gesamtkosten inkl. Puffer',eur(Fin.total)],['Zuschüsse',`<span class="pos">${eur(F.zuschuss)}</span>`],['Steuervorteile',`<span class="pos">${eur(F.st35c+F.st35a)}</span>`],
+   ['Netto-Eigenanteil',eur(Fin.total-F.zuschuss-F.st35c-F.st35a)],['Kreditbedarf',eur(Fin.bedarf)],['Monatsrate',eur(Fin.rate)],['Energie-Ersparnis/Jahr',`<span class="pos">${eur(En.year)}</span>`]
+  ].map(([a,b])=>`<div><small>${a}</small><b>${b}</b></div>`).join('');
+}
+
+const VIEW={};
+VIEW.dash=()=>`<div id="live"></div>`;
+VIEW.dash.live=()=>{const{F,Fin,En,R}=C;const P=state.projekt;
+  const byG=Object.keys(GROUPS).map(g=>({l:GROUPS[g],c:GCOL[g],v:sum(state.posten.filter(p=>(KAT[p.kat]||KAT.sonst).g===g),p=>+p.kosten||0)}));
+  if(Fin.puffer)byG.push({l:`Puffer (${P.puffer} %)`,c:'#cbd5e1',v:Fin.puffer});
+  const mix=[{l:'Eigenkapital',c:'#0f766e',v:Fin.ek},{l:'Zuschüsse'+(state.finanz.zuschSond?' (nachträglich)':''),c:'#22c55e',v:F.zuschuss},{l:'Darlehen A (Bank)',c:'#2563eb',v:Math.max(0,Fin.aB-(state.finanz.zuschSond?F.zuschuss:0))},{l:'Darlehen B (KfW)',c:'#7c3aed',v:Fin.bB}];
+  const mt=sum(mix,m=>m.v)||1;
+  return`<div class="grid g4">
+   <div class="kpi"><small>Gesamtkosten</small><div class="v">${eur(Fin.total)}</div><div class="d">${eur(Fin.netto)} Posten + ${eur(Fin.puffer)} Puffer · ${eur(Fin.total/(P.wf||1))}/m²</div></div>
+   <div class="kpi"><small>Förderung gesamt</small><div class="v pos">${eur(F.zuschuss+F.st35c+F.st35a)}</div><div class="d">${eur(F.zuschuss)} Zuschuss · ${eur(F.st35c+F.st35a)} Steuer · Quote ${pct(Fin.netto?(F.zuschuss+F.st35c+F.st35a)/Fin.netto*100:0)}</div></div>
+   <div class="kpi"><small>Monatliche Rate</small><div class="v">${eur(Fin.rate)}</div><div class="d">${pct(Fin.quote*100,0)} vom Haushaltsnetto · Zinsen gesamt ${eur(Fin.zSum)}</div></div>
+   <div class="kpi"><small>Effektive Mehrbelastung</small><div class="v">${eur(Fin.rate-En.year/12)}</div><div class="d">Rate minus Energieersparnis (${eur(En.year/12)}/Monat)${En.pay?` · Energie-Amortisation ca. ${En.pay} J.`:''}</div></div>
+  </div>
+  <div class="grid g2 mt">
+   <div class="card"><h2>Kosten nach Bereich</h2>${donut(byG)}</div>
+   <div class="card"><h2>Wer bezahlt was?</h2>
+     <div class="stack">${mix.map(m=>`<div style="width:${m.v/mt*100}%;background:${m.c}" title="${m.l}: ${eur(m.v)}"></div>`).join('')}</div>
+     <div class="legend">${mix.map(m=>`<span style="--c:${m.c}">${m.l}: <b>${eur(m.v)}</b></span>`).join('')}</div>
+     <table class="mt"><tr><td>Gesamtkosten</td><td class="n">${eur(Fin.total)}</td></tr>
+     <tr><td>– Eigenkapital</td><td class="n">${eur(Fin.ek)}</td></tr>
+     <tr><td>– Zuschüsse KfW/BAFA</td><td class="n pos">${eur(F.zuschuss)}</td></tr>
+     <tr class="sum"><td>Dauerhaft zu finanzieren</td><td class="n">${eur(Math.max(0,Fin.total-Fin.ek-F.zuschuss))}</td></tr>
+     <tr><td class="muted">+ Steuerrückerstattung (über 1–3 Jahre)</td><td class="n pos">${eur(F.st35c+F.st35a)}</td></tr></table>
+   </div>
+  </div>
+  <div class="card mt"><h2>🧠 Intelligente Empfehlungen <span class="muted small">${R.length} Hinweise für Ihr Projekt</span></h2>
+   ${R.map(x=>`<div class="rec ${x.type}"><div class="ic">${{info:'💡',warn:'⚠️',money:'💰',risk:'⛔'}[x.type]}</div><div><b>${esc(x.title)}</b>${esc(x.text)}</div></div>`).join('')}
+  </div>`;
+};
+
+VIEW.projekt=()=>`<div class="grid g2">
+ <div class="card"><h2>Projekt & Gebäude</h2><div class="grid g3">
+  ${inp('projekt.name','Projektname',{type:'text'})}
+  ${inp('projekt.wf','Wohnfläche (m²)',{help:'Basis für Richtwerte'})}
+  ${inp('projekt.we','Wohneinheiten',{min:1})}
+  ${inp('projekt.baujahr','Baujahr',{min:1800})}
+  ${inp('projekt.jahre','Bauzeit / Verteilung (Jahre)',{min:1,help:'für §35a-Deckel pro Jahr'})}
+  ${inp('projekt.puffer','Puffer für Unvorhergesehenes (%)',{help:'empfohlen 10–20 %'})}
+ </div><div class="grid g3 mt">
+  ${inp('projekt.selbst','Selbst genutzt (Eigentümer wohnt darin)',{type:'check'})}
+  ${inp('projekt.isfp','iSFP (Sanierungsfahrplan) liegt vor',{type:'check'})}
+  ${inp('projekt.klima','Alte Öl-/Kohle-/Nachtspeicher- oder >20 J. alte Gasheizung wird ersetzt',{type:'check'})}
+ </div></div>
+ <div class="card"><h2>Förder-relevante Angaben</h2><div class="grid g3">
+  ${inp('projekt.zve','Zu versteuerndes Haushaltseinkommen (€/Jahr)',{help:'Ø des 2. & 3. Jahres vor Antrag – für Einkommensbonus'})}
+  ${inp('finanz.netto','Haushaltsnetto (€/Monat)',{help:'für Belastungsquote'})}
+  ${inp('projekt.auto','Automatik bei Förderweg',{type:'select',options:[['max','Höchsten Betrag wählen (Zuschuss vs. §35c)'],['zuschuss','Immer Zuschuss bevorzugen']]})}
+ </div>
+ <div class="rec info mt"><div class="ic">💡</div><div><b>Wie rechnet das Tool?</b>Für jeden Posten wird automatisch das passende Programm (BAFA BEG EM, KfW 458, Fachplanung, iSFP, KfW 270/159) zugeordnet. Die Automatik vergleicht Zuschuss und Steuerbonus (§35c) je Programmgruppe und wählt das Bessere. Nicht förderfähige Posten werden über den Handwerkerbonus (§35a) berücksichtigt. Sie können den Weg pro Posten manuell überschreiben.</div></div>
+ </div></div>`;
+
+VIEW.posten=()=>{const opts=Object.entries(GROUPS).map(([g,gl])=>`<optgroup label="${gl}">${Object.entries(KAT).filter(([,K])=>K.g===g).map(([k,K])=>`<option value="${k}">${K.l}</option>`).join('')}</optgroup>`).join('');
+ return`<div class="card"><h2>Sanierungsposten <span class="addbar noprint"><select id="addKat">${opts}</select><button class="btn" onclick="addPosten()">+ Posten</button>
+   <select id="tpl" onchange="if(this.value){loadTemplate(this.value);this.value=''}"><option value="">Vorlage hinzufügen …</option>${Object.entries(TEMPLATES).map(([k,t])=>`<option value="${k}">${t.l}</option>`).join('')}</select>
+   <button class="btn sec" onclick="allRichtwerte()">Alle Richtwerte neu</button>
+   ${state.posten.length?`<button class="btn sec" onclick="if(confirm('Alle Posten löschen?')){state.posten=[];save();render()}">Alle löschen</button>`:''}</span></h2>
+ ${state.posten.length?`<div class="tw"><table><thead><tr><th style="min-width:200px">Bezeichnung</th><th style="min-width:190px">Kategorie</th><th class="n" style="min-width:120px">Kosten brutto €</th><th class="n">Arbeits-%</th><th>Eigen&shy;leistung</th><th>Status</th><th style="min-width:130px">Förderweg</th><th class="n">Förderung</th><th></th></tr></thead><tbody>
+ ${state.posten.map(p=>{const K=KAT[p.kat]||KAT.sonst;return`<tr class="main"><td><input data-pid="${p.id}" data-field="name" value="${esc(p.name)}"></td>
+  <td><select data-pid="${p.id}" data-field="kat">${Object.entries(KAT).map(([k,KK])=>`<option value="${k}" ${k===p.kat?'selected':''}>${KK.l}</option>`).join('')}</select></td>
+  <td><input type="number" step="100" min="0" data-pid="${p.id}" data-field="kosten" value="${p.kosten}" style="text-align:right"></td>
+  <td><input type="number" min="0" max="100" data-pid="${p.id}" data-field="ar" value="${p.ar}" style="width:64px;text-align:right"></td>
+  <td style="text-align:center"><input type="checkbox" data-pid="${p.id}" data-field="el" ${p.el?'checked':''} style="width:auto"></td>
+  <td><select data-pid="${p.id}" data-field="status">${[['geplant','geplant'],['angebot','Angebot liegt vor'],['beauftragt','beauftragt'],['fertig','fertig']].map(([a,b])=>`<option value="${a}" ${p.status===a?'selected':''}>${b}</option>`).join('')}</select></td>
+  <td><select data-pid="${p.id}" data-field="weg">${[['auto','🧠 Automatisch'],['zuschuss','Zuschuss'],['steuer','Steuer §35c'],['keine','keine']].map(([a,b])=>`<option value="${a}" ${p.weg===a?'selected':''}>${b}</option>`).join('')}</select></td>
+  <td class="n" id="f-${p.id}"></td><td><button class="btn del noprint" title="Löschen" onclick="delPosten('${p.id}')">×</button></td></tr>
+  <tr class="info"><td colspan="9" id="i-${p.id}"></td></tr>`}).join('')}
+ </tbody><tfoot id="ptfoot"></tfoot></table></div>`:`<div class="empty">Noch keine Posten. Wählen Sie oben eine Vorlage oder fügen Sie einzelne Posten hinzu.</div>`}
+ </div>`;};
+VIEW.posten.live=()=>{const{F,Fin}=C;
+  F.it.forEach(x=>{const p=x.p,K=x.K;const fc=document.getElementById('f-'+p.id),ic=document.getElementById('i-'+p.id);if(!fc)return;
+    const [wl,wc]=WEG_TAG[x.weg]||WEG_TAG.keine;const val=x.zuschuss+x.st35c+x.st35a;
+    fc.innerHTML=`<span class="tag ${wc}">${wl}</span><br><b class="${val?'pos':'muted'}">${eur(val)}</b>${x.kosten&&val?` <span class="muted small">(${pct(val/x.kosten*100,0)})</span>`:''}`;
+    const pr=PROG[x.c]||PROG.none;
+    ic.innerHTML=[`<span class="pill">${pr.kurz}</span>`,rwText(p.kat)?`Richtwert: ${rwText(p.kat)} <button class="btn sec sm noprint" onclick="setRW('${p.id}')">übernehmen</button>`:'',K.m?`Anforderung: ${esc(K.m)}`:'',x.c==='pv'||x.c==='alt'?`<span class="tag t-k">Förderkredit ${pr.kurz}</span>`:'',p.el?'Eigenleistung: nur Material angesetzt':'',x.why?esc(x.why):'',K.t?'💡 '+esc(K.t):''].filter(Boolean).join(' · ');
+  });
+  const tf=document.getElementById('ptfoot');if(tf)tf.innerHTML=`<tr class="sum"><td colspan="2">Summe Posten</td><td class="n">${eur(Fin.netto)}</td><td colspan="4"></td><td class="n pos">${eur(F.zuschuss+F.st35c+F.st35a)}</td><td></td></tr>
+   <tr><td colspan="2">+ Puffer ${state.projekt.puffer} %</td><td class="n">${eur(Fin.puffer)}</td><td colspan="6"></td></tr>
+   <tr class="sum"><td colspan="2">Gesamtkosten</td><td class="n">${eur(Fin.total)}</td><td colspan="6"></td></tr>`;
+};
+
+VIEW.foerder=()=>`<div id="live"></div>
+ <div class="card mt"><h2>🏗️ Alternative: Komplettsanierung zum Effizienzhaus (KfW 261)</h2>
+  <p class="muted small">Statt Einzelmaßnahmen kann das ganze Haus auf einen Effizienzhaus-Standard gebracht werden: zinsgünstiger Kredit + Tilgungszuschuss. Lohnt meist bei umfangreicher Sanierung. Erfordert Energieeffizienz-Experten.</p>
+  <div class="grid g4">${inp('eh.ziel','Ziel-Standard',{type:'select',options:[['eh85','Effizienzhaus 85'],['eh70','Effizienzhaus 70'],['eh55','Effizienzhaus 55'],['eh40','Effizienzhaus 40']]})}
+   ${inp('eh.ee','Erneuerbare-Energien-Klasse (EE)',{type:'check'})}${inp('eh.wpb','Worst Performing Building (Klasse H / unsaniert)',{type:'check'})}</div>
+  <div id="ehlive" class="mt"></div></div>`;
+VIEW.foerder.live=()=>{const{F}=C;const P=state.projekt;const h=heizRate();
+  const groups=[['em','BAFA BEG Einzelmaßnahmen'],['heiz','KfW 458 Heizung'],['fp','Fachplanung/Baubegleitung'],['ebw','Energieberatung (iSFP)']];
+  document.getElementById('live').innerHTML=`<div class="grid g4">
+   <div class="kpi"><small>Zuschüsse (KfW/BAFA)</small><div class="v pos">${eur(F.zuschuss)}</div></div>
+   <div class="kpi"><small>Steuerbonus §35c (über 3 J.)</small><div class="v pos">${eur(F.st35c)}</div><div class="d">${F.steuerOK?'möglich':'nicht möglich (Selbstnutzung & ≥10 J. nötig)'}</div></div>
+   <div class="kpi"><small>Handwerkerbonus §35a</small><div class="v pos">${eur(F.st35a)}</div><div class="d">Arbeitskosten ${eur(F.lab)} · Deckel ${eur(F.cap5)}</div></div>
+   <div class="kpi"><small>Heizungs-Fördersatz</small><div class="v">${pct(h.rate*100,0)}</div><div class="d">${esc(h.txt)}</div></div></div>
+  <div class="card mt"><h2>Förderung je Posten</h2><div class="tw"><table><thead><tr><th>Posten</th><th>Programm</th><th>Weg</th><th class="n">Kosten</th><th class="n">Zuschuss</th><th class="n">§35c</th><th class="n">§35a</th><th class="n">Quote</th></tr></thead><tbody>
+  ${F.it.map(x=>{const[wl,wc]=WEG_TAG[x.weg];const v=x.zuschuss+x.st35c+x.st35a;return`<tr><td>${esc(x.p.name)}</td><td class="small">${(PROG[x.c]||PROG.none).kurz}</td><td><span class="tag ${wc}">${wl}</span></td><td class="n">${eur(x.kosten)}</td><td class="n">${x.zuschuss?eur(x.zuschuss):'–'}</td><td class="n">${x.st35c?eur(x.st35c):'–'}</td><td class="n">${x.st35a?eur(x.st35a):'–'}</td><td class="n">${x.kosten?pct(v/x.kosten*100,0):'–'}</td></tr>`}).join('')}
+  <tr class="sum"><td colspan="3">Summe</td><td class="n">${eur(sum(F.it,x=>x.kosten))}</td><td class="n">${eur(F.zuschuss)}</td><td class="n">${eur(F.st35c)}</td><td class="n">${eur(F.st35a)}</td><td class="n">${pct(sum(F.it,x=>x.kosten)?(F.zuschuss+F.st35c+F.st35a)/sum(F.it,x=>x.kosten)*100:0,0)}</td></tr></tbody></table></div></div>
+  <div class="card mt"><h2>Programme im Detail</h2><div class="grid g3">
+   ${groups.map(([c,l])=>{const b=F.byClass[c];return`<div class="prog"><h4>${l}</h4><div>Förderfähige Kosten (Zuschussweg): <b>${eur(b?.E)}</b></div><div>Zuschuss: <b class="pos">${eur(b?.tot)}</b></div><div class="small muted mt">${{
+     em:`${state.S.begSatz} % Grundförderung${P.isfp?` + ${state.S.isfpBonus} % iSFP-Bonus auf den Teil über ${eur(state.S.isfpSchwelle)}`:''}. Max. förderfähig ${eur((P.isfp?state.S.emMaxMit:state.S.emMaxOhne)*(+P.we||1))} pro Jahr.`,
+     heiz:`${esc(h.txt)}. Max. förderfähig ${eur(state.S.heizMax1+((+P.we||1)-1)*state.S.heizMaxW)}.`,
+     fp:`${state.S.fpSatz} % der Kosten, max. förderfähig ${eur(state.S.fpMaxEFH)} (EFH/ZFH).`,
+     ebw:`${state.S.ebwSatz} % Zuschuss, max. ${eur(state.S.ebwMaxEFH)} (EFH/ZFH) bzw. ${eur(state.S.ebwMaxMFH)} (MFH).`}[c]}</div>
+     <a href="${PROG[c].url}" target="_blank" rel="noopener">Offizielle Infos →</a></div>`}).join('')}
+   <div class="prog"><h4>Steuer: §35c / §35a EStG</h4><div class="small">§35c: 20 % der Kosten energetischer Maßnahmen (max. 40.000 €) über 3 Jahre, Energieberater 50 %. §35a: 20 % der Arbeitskosten, max. 1.200 €/Jahr. Nicht doppelt mit Zuschuss für dieselbe Rechnung.</div><a href="https://www.gesetze-im-internet.de/estg/__35c.html" target="_blank" rel="noopener">Gesetzestext →</a></div>
+   <div class="prog"><h4>Förderkredite</h4><div class="small">KfW 358/359 Ergänzungskredit (zu BEG-Zuschüssen, bis 120.000 €/WE) · KfW 270 für PV/Speicher · KfW 159 Altersgerecht Umbauen · KfW 261 Effizienzhaus.</div><a href="https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/" target="_blank" rel="noopener">KfW-Übersicht →</a></div>
+   <div class="prog"><h4>Regional & Sonstiges</h4><div class="small">Länder, Kommunen und Stadtwerke fördern oft zusätzlich. Pflegekasse: bis 4.180 € je Person für wohnumfeldverbessernde Maßnahmen.</div><a href="https://www.foerderdatenbank.de" target="_blank" rel="noopener">Förderdatenbank des Bundes →</a></div>
+  </div></div>`;
+  const e=ehCalc(F);
+  document.getElementById('ehlive').innerHTML=`<table><tr><td>Energetische Kosten (Hülle, Anlagen, Heizung)</td><td class="n">${eur(e.kosten)}</td></tr>
+   <tr><td>Max. Kreditbetrag (${eur(e.max)})</td><td class="n">${eur(e.kredit)}</td></tr>
+   <tr><td>Tilgungszuschuss ${e.label}${state.eh.wpb?' + WPB':''}</td><td class="n">${pct(e.pctTZ,0)}</td></tr>
+   <tr class="sum"><td>Tilgungszuschuss KfW 261</td><td class="n pos">${eur(e.tz)}</td></tr>
+   <tr><td>Zum Vergleich: Zuschüsse Einzelmaßnahmen (BAFA EM + KfW 458)</td><td class="n">${eur(e.emRoute)}</td></tr></table>
+   <div class="rec ${e.tz>e.emRoute?'money':'info'} mt"><div class="ic">${e.tz>e.emRoute?'💰':'💡'}</div><div><b>${e.tz>e.emRoute?`Effizienzhaus-Weg bringt ca. ${eur(e.tz-e.emRoute)} mehr`:'Einzelmaßnahmen sind hier günstiger oder gleichwertig'}</b>Hinweis: Effizienzhaus erfordert ein Gesamtkonzept (alle Bauteile + Heizung aufeinander abgestimmt) und meist höhere Gesamtinvestition. Fördersätze in den Einstellungen anpassbar.</div></div>`;
+};
+
+VIEW.finanz=()=>`<div class="grid g2">
+ <div class="card"><h2>Eigenmittel</h2><div class="grid g3">
+  ${inp('finanz.ek','Eigenkapital (€)',{step:1000})}${inp('finanz.netto','Haushaltsnetto (€/Monat)')}</div>
+  <div class="mt">${inp('finanz.zuschSond','Zuschüsse vorfinanzieren & nach Auszahlung als Sondertilgung nutzen (empfohlen)',{type:'check'})}</div>
+  <div id="bedarf" class="mt"></div></div>
+ <div class="card"><h2>Darlehen A – Bank / Hauptfinanzierung</h2>
+  ${slider('finanz.a.zins','Sollzins p. a. (%)',0.5,9,0.05)}
+  <div class="grid g3 mt">${inp('finanz.a.modus','Berechnung über',{type:'select',options:[['tilgung','Anfangstilgung (%)'],['laufzeit','Laufzeit (Jahre)']]})}
+  ${state.finanz.a.modus==='tilgung'?inp('finanz.a.tilg','Anfangstilgung (%)',{step:0.1}):inp('finanz.a.lz','Laufzeit (Jahre)',{min:1})}
+  ${inp('finanz.a.bind','Zinsbindung (Jahre)')}${inp('finanz.a.anschl','Anschlusszins (%)',{step:0.1,help:'Annahme nach Zinsbindung'})}${inp('finanz.a.sond','Sondertilgung p. a. (€)',{step:500})}</div></div>
+ <div class="card"><h2>Darlehen B – KfW-Förderkredit (optional)</h2>
+  ${inp('finanz.b.aktiv','Zweites Darlehen verwenden (z. B. KfW 358/359, 261, 270)',{type:'check'})}
+  ${state.finanz.b.aktiv?`<div class="mt">${slider('finanz.b.zins','Sollzins p. a. (%)',0.5,9,0.05)}</div><div class="grid g3 mt">${inp('finanz.b.betrag','Betrag (€)',{step:1000})}
+  ${inp('finanz.b.modus','Berechnung über',{type:'select',options:[['laufzeit','Laufzeit (Jahre)'],['tilgung','Anfangstilgung (%)']]})}
+  ${state.finanz.b.modus==='tilgung'?inp('finanz.b.tilg','Anfangstilgung (%)',{step:0.1}):inp('finanz.b.lz','Laufzeit (Jahre)',{min:1})}
+  ${inp('finanz.b.bind','Zinsbindung (Jahre)')}${inp('finanz.b.anschl','Anschlusszins (%)',{step:0.1})}${inp('finanz.b.sond','Sondertilgung p. a. (€)',{step:500})}</div>`:'<p class="muted small">Aktuelle KfW-Konditionen auf kfw.de prüfen – Förderkredite sind oft günstiger als Bankdarlehen und bieten tilgungsfreie Anlaufjahre.</p>'}</div>
+ <div class="card"><h2>Ergebnis</h2><div id="finres"></div></div>
+</div>
+<div class="grid g2 mt"><div class="card"><h2>Restschuld-Verlauf</h2><div id="ch1"></div></div><div class="card"><h2>Zins & Tilgung pro Jahr</h2><div id="ch2"></div></div></div>
+<div class="grid g2 mt"><div class="card"><h2>Zins-Szenarien (Darlehen A)</h2><div id="scen"></div></div><div class="card"><h2>Anschlusszins-Risiko</h2><div id="scen2"></div></div></div>
+<div class="card mt"><h2>Tilgungsplan (jährlich)</h2><div class="tw" id="plan"></div></div>`;
+VIEW.finanz.live=()=>{const{F,Fin}=C;const Fi=state.finanz;const set=(id,h)=>{const e=document.getElementById(id);if(e)e.innerHTML=h};
+  set('bedarf',`<table><tr><td>Gesamtkosten inkl. Puffer</td><td class="n">${eur(Fin.total)}</td></tr><tr><td>– Eigenkapital</td><td class="n">${eur(Fin.ek)}</td></tr>${Fi.zuschSond?'':`<tr><td>– Zuschüsse</td><td class="n">${eur(F.zuschuss)}</td></tr>`}
+   <tr class="sum"><td>Finanzierungsbedarf</td><td class="n">${eur(Fin.bedarf)}</td></tr><tr><td>davon Darlehen A</td><td class="n">${eur(Fin.aB)}</td></tr>${Fin.bB?`<tr><td>davon Darlehen B</td><td class="n">${eur(Fin.bB)}</td></tr>`:''}
+   ${Fi.zuschSond&&F.zuschuss?`<tr><td class="muted">Sondertilgung aus Zuschüssen (Monat ${state.S.zuschMonat})</td><td class="n pos">${eur(F.zuschuss)}</td></tr>`:''}</table>`);
+  const L=(n,s)=>s?`<h3>${n}</h3><table><tr><td>Darlehensbetrag</td><td class="n">${eur(s.B)}</td></tr><tr><td>Monatsrate</td><td class="n"><b>${eur(s.rate)}</b></td></tr>${s.rateAfter?`<tr><td>Rate nach Zinsbindung (Anschlusszins)</td><td class="n">${eur(s.rateAfter)}</td></tr>`:''}<tr><td>Restschuld nach Zinsbindung</td><td class="n">${eur(s.restBind)}</td></tr><tr><td>Zinsen gesamt</td><td class="n">${eur(s.zSum)}</td></tr><tr><td>Schuldenfrei nach</td><td class="n">${num(s.months/12,1)} Jahren (${YEAR+Math.ceil(s.months/12)})</td></tr></table>`:'';
+  set('finres',`<div class="grid g3"><div class="kpi"><small>Gesamtrate / Monat</small><div class="v">${eur(Fin.rate)}</div><div class="d">${pct(Fin.quote*100,0)} vom Netto</div></div><div class="kpi"><small>Zinskosten gesamt</small><div class="v neg">${eur(Fin.zSum)}</div></div><div class="kpi"><small>Schuldenfrei</small><div class="v">${Fin.rows.length?YEAR+Fin.rows.length:'–'}</div></div></div>${L('Darlehen A',Fin.A)}${L('Darlehen B',Fin.B)}${!Fin.A&&!Fin.B?'<p class="muted">Kein Kredit nötig – Eigenkapital deckt die Kosten. 🎉</p>':''}`);
+  set('ch1',Fin.rows.length?lineChart([{n:'Restschuld gesamt',c:'#2563eb',fill:true,pts:[[0,Fin.aB+Fin.bB],...Fin.rows.map(r=>[r.j,r.rest])]},...(Fin.bB?[{n:'Darlehen B',c:'#7c3aed',pts:[[0,Fin.bB],...Fin.rows.map(r=>[r.j,r.restB])]}]:[])]):'<div class="empty">Kein Kredit</div>');
+  set('ch2',colChart(Fin.rows,[{k:'zins',n:'Zinsen',c:'#f87171'},{k:'tilg',n:'Tilgung',c:'#22c55e'},{k:'sond',n:'Sondertilgung',c:'#0f766e'}]));
+  const ex=Fi.zuschSond&&F.zuschuss>0?[{m:+state.S.zuschMonat||9,amt:F.zuschuss}]:[];
+  set('scen',Fin.aB?`<table><thead><tr><th>Sollzins</th><th class="n">Rate</th><th class="n">Zinsen gesamt</th><th class="n">Restschuld n. Bindung</th></tr></thead>${[-1,-0.5,0,0.5,1,2].map(d=>{const z=Math.max(0.1,+Fi.a.zins+d);const s=sim({...Fi.a,zins:z},Fin.aB,ex);return`<tr ${d===0?'style="background:#f0fdfa;font-weight:600"':''}><td>${pct(z,2)}</td><td class="n">${eur(s.rate)}</td><td class="n">${eur(s.zSum)}</td><td class="n">${eur(s.restBind)}</td></tr>`}).join('')}</table>`:'<p class="muted">Kein Darlehen A.</p>');
+  set('scen2',Fin.A&&Fin.A.restBind>0?`<p class="small muted">Nach ${Fi.a.bind} Jahren Zinsbindung bleiben ${eur(Fin.A.restBind)} Restschuld. So verändert sich die Rate je nach Zinsniveau:</p><table><thead><tr><th>Anschlusszins</th><th class="n">neue Rate</th><th class="n">Zinsen gesamt</th></tr></thead>${[2,3,4,5,6,7,8].map(z=>{const s=sim({...Fi.a,anschl:z},Fin.aB,ex);return`<tr><td>${pct(z,1)}</td><td class="n">${eur(s.rateAfter)}</td><td class="n">${eur(s.zSum)}</td></tr>`}).join('')}</table><p class="small muted">Tipp: Forward-Darlehen bis 5 Jahre vor Ablauf möglich; nach 10 Jahren besteht ein Sonderkündigungsrecht (§489 BGB).</p>`:'<p class="muted">Kredit ist innerhalb der Zinsbindung getilgt – kein Anschlusszins-Risiko. 👍</p>');
+  set('plan',Fin.rows.length?`<table><thead><tr><th>Jahr</th><th class="n">Kalenderjahr</th><th class="n">Raten</th><th class="n">Zinsen</th><th class="n">Tilgung</th><th class="n">Sondertilgung</th><th class="n">Restschuld</th></tr></thead>${Fin.rows.map(r=>`<tr><td>${r.j}</td><td class="n">${YEAR+r.j-1}</td><td class="n">${eur(r.rate)}</td><td class="n">${eur(r.zins)}</td><td class="n">${eur(r.tilg)}</td><td class="n">${r.sond?eur(r.sond):'–'}</td><td class="n">${eur(r.rest)}</td></tr>`).join('')}</table>`:'');
+};
+
+VIEW.energie=()=>`<div class="grid g2"><div class="card"><h2>Aktuelle Energiekosten</h2><div class="grid g3">
+ ${inp('energie.heiz','Heizkosten heute (€/Jahr)',{step:100})}${inp('energie.strom','Haushaltsstrom (€/Jahr)',{step:100})}${inp('energie.strompreis','Strompreis (€/kWh)',{step:0.01})}${inp('energie.steig','Energiepreis-Steigerung (%/Jahr)',{step:0.5,help:'CO₂-Preis (ETS2 ab 2027) verteuert Öl & Gas'})}</div>
+ <p class="small muted mt">Einsparungen sind typische Erfahrungswerte je Maßnahme und werden multiplikativ kombiniert (Maßnahmen überlappen sich). Für exakte Werte: Energieberater / iSFP.</p></div>
+ <div class="card"><h2>Ergebnis</h2><div id="enres"></div></div></div>
+ <div class="card mt"><h2>Amortisation der energetischen Maßnahmen</h2><div id="ench"></div></div>`;
+VIEW.energie.live=()=>{const{En,Fin}=C;
+  document.getElementById('enres').innerHTML=`<div class="grid g3"><div class="kpi"><small>Ersparnis / Jahr</small><div class="v pos">${eur(En.year)}</div><div class="d">${eur(En.year/12)} pro Monat</div></div><div class="kpi"><small>Heizkosten-Reduktion</small><div class="v">${pct((1-En.remain)*100,0)}</div></div><div class="kpi"><small>CO₂-Einsparung ca.</small><div class="v">${num(En.co2t,1)} t/Jahr</div></div></div>
+  <table class="mt"><thead><tr><th>Maßnahme</th><th class="n">Ersparnis €/Jahr</th></tr></thead>${En.per.map(x=>`<tr><td>${esc(x.p.name)} <span class="muted small">(~${x.s} %)</span></td><td class="n">${eur(x.eur)}</td></tr>`).join('')}
+  ${En.pvSave?`<tr><td>Photovoltaik (~${num(En.kwp,1)} kWp, ${num(En.yieldK,0)} kWh/Jahr)</td><td class="n">${eur(En.pvSave)}</td></tr>`:''}
+  <tr class="sum"><td>Summe</td><td class="n">${eur(En.year)}</td></tr></table>`;
+  document.getElementById('ench').innerHTML=En.year?`${lineChart([{n:'Kumulierte Energieersparnis',c:'#16a34a',fill:true,pts:[[0,0],...En.cum]}],{hline:En.enCost,hlabel:'Eigenanteil energetische Maßnahmen '+eur(En.enCost)})}
+   <p>${En.pay?`✅ Die energetischen Maßnahmen haben sich nach ca. <b>${En.pay} Jahren</b> durch Energieeinsparung bezahlt gemacht (ohne Finanzierungskosten, mit ${state.energie.steig} % Preissteigerung).`:'⏳ Innerhalb von 30 Jahren keine vollständige Amortisation allein über Energiekosten – Wertsteigerung und Komfort nicht eingerechnet.'}</p>`:'<div class="empty">Keine energetischen Maßnahmen erfasst.</div>';
+};
+
+VIEW.settings=()=>{const S=state.S;const f=(k,l,st=1)=>`<label class="f">${l}<input type="number" step="${st}" data-bind="S.${k}" value="${S[k]}"></label>`;
+ return`<div class="card"><h2>Fördersätze & Parameter <button class="btn sec sm" onclick="if(confirm('Fördersätze auf Standard zurücksetzen?')){state.S={...DEFAULT_S};save();render()}">Standard wiederherstellen</button></h2>
+ <p class="muted small">Förderprogramme ändern sich häufig (zuletzt BEG-Reform zum 21.07.2026). Hier können Sie alle Sätze an den aktuellen Stand anpassen.</p>
+ <h3>BAFA BEG Einzelmaßnahmen</h3><div class="grid g4">${f('begSatz','Grundförderung %')}${f('isfpBonus','iSFP-Bonus %')}${f('isfpSchwelle','iSFP-Bonus ab € (je WE)',1000)}${f('emMaxOhne','Max. Kosten ohne iSFP €/WE',1000)}${f('emMaxMit','Max. Kosten mit iSFP €/WE',1000)}</div>
+ <h3>KfW 458 Heizung</h3><div class="grid g4">${f('heizGrund','Grundförderung %')}${f('klimaBonus','Klima-Geschwindigkeitsbonus %')}${f('eink1Grenze','Einkommensstufe 1 bis €',1000)}${f('eink1','Bonus Stufe 1 %')}${f('eink2Grenze','Stufe 2 bis €',1000)}${f('eink2','Bonus Stufe 2 %')}${f('eink3Grenze','Stufe 3 bis €',1000)}${f('eink3','Bonus Stufe 3 %')}${f('heizMaxQuote','Max. Fördersatz %')}${f('heizMax1','Max. Kosten 1. WE €',1000)}${f('heizMaxW','Max. Kosten weitere WE €',1000)}</div>
+ <h3>Planung & Beratung</h3><div class="grid g4">${f('fpSatz','Fachplanung %')}${f('fpMaxEFH','Fachplanung max. Kosten EFH €',500)}${f('fpMaxWE','Fachplanung max. €/WE (MFH)',500)}${f('ebwSatz','Energieberatung %')}${f('ebwMaxEFH','Energieberatung max. € EFH',50)}${f('ebwMaxMFH','Energieberatung max. € MFH',50)}</div>
+ <h3>Steuer</h3><div class="grid g4">${f('st35cSatz','§35c Satz %')}${f('st35cMax','§35c max. €',1000)}${f('st35aSatz','§35a Satz %')}${f('st35aMax','§35a max. €/Jahr',100)}</div>
+ <h3>KfW 261 Effizienzhaus (Tilgungszuschuss)</h3><div class="grid g4">${f('eh85','EH 85 %')}${f('eh70','EH 70 %')}${f('eh55','EH 55 %')}${f('eh40','EH 40 %')}${f('ehEE','EE-/NH-Klasse +%')}${f('ehWPB','WPB-Bonus +%')}${f('ehMaxWE','Max. Kredit €/WE',1000)}${f('ehMaxWEee','Max. Kredit EE €/WE',1000)}</div>
+ <h3>Sonstiges</h3><div class="grid g4">${f('zuschMonat','Auszahlung Zuschuss in Monat')}${f('einspeis','Einspeisevergütung €/kWh',0.001)}</div></div>
+ <div class="card mt"><h2>Daten</h2><div class="addbar"><button class="btn sec" onclick="exportJSON()">Projekt als Datei speichern</button><button class="btn sec" onclick="if(confirm('Alles zurücksetzen? Alle Eingaben gehen verloren.')){state=defaultState();save();render()}">Komplett zurücksetzen</button></div></div>
+ <div class="card mt"><h2>Quellen & Stand (Recherche November 2026)</h2><ul class="small">
+  <li>BEG-Einzelmaßnahmen nach Reform 21.07.2026 (15 % Grundförderung, iSFP-Bonus nur über 30.000 €): <a href="https://baukostenplan.de/ratgeber/bafa-beg-einzelmassnahmen-reform-juli-2026" target="_blank">baukostenplan.de</a>, <a href="https://www.lenzenergieberatung.de/ratgeber-energieberatung/isfp-bonus-2026-geaendert" target="_blank">lenzenergieberatung.de</a></li>
+  <li>KfW 458 (Klimabonus 16 %, gestaffelter Einkommensbonus): <a href="https://www.adac.de/rund-ums-haus/energie/spartipps/foerderung-heizung/" target="_blank">ADAC</a>, <a href="https://baukostenplan.de/ratgeber/kfw-heizungsfoerderung-aenderungen-juli-2026" target="_blank">baukostenplan.de</a></li>
+  <li>KfW 261: <a href="https://www.finanztip.de/kfw-foerderung/kfw-energieeffizient-sanieren/" target="_blank">Finanztip</a>, <a href="https://www.kfw.de/261" target="_blank">kfw.de/261</a></li>
+  <li>§35a / §35c EStG: <a href="https://www.vlh.de/wohnen-vermieten/eigentum/steuern-sparen-bei-energetischer-sanierung.html" target="_blank">VLH</a></li>
+ </ul><p class="small muted">Die Quellen widersprechen sich teilweise (v. a. bei Heizungs-Höchstsätzen und KfW-261-Tilgungszuschüssen). Verbindlich sind nur die aktuellen Merkblätter von KfW und BAFA.</p></div>`;};
+
+/* ===================== Render & Events ===================== */
+function renderNav(){document.getElementById('nav').innerHTML=TABS.map(([k,l])=>`<button class="${k===tab?'on':''}" onclick="go('${k}')">${l}</button>`).join('')}
+function go(t){tab=t;render();window.scrollTo(0,0)}
+function keyOf(el){return el?.dataset?.bind||(el?.dataset?.pid?el.dataset.pid+':'+el.dataset.field:null)}
+function render(){
+  const k=keyOf(document.activeElement),type=document.activeElement?.type;
+  compute();renderNav();kpibar();
+  document.getElementById('app').innerHTML=`<div class="tab">${VIEW[tab]()}</div>`;
+  live();
+  if(k){const [a,b]=k.split(':');const el=b?document.querySelector(`[data-pid="${a}"][data-field="${b}"]`):[...document.querySelectorAll(`[data-bind="${k}"]`)].find(e=>e.type===type);el?.focus()}
+}
+function live(){const f=VIEW[tab].live;if(!f)return;const h=f();if(typeof h==='string')document.getElementById('live').innerHTML=h}
+function readVal(el){if(el.type==='checkbox')return el.checked;if(el.type==='number'||el.type==='range')return el.value===''?0:parseFloat(el.value);return el.value}
+function apply(el){
+  if(el.dataset.bind){setP(state,el.dataset.bind,readVal(el));document.querySelectorAll(`[data-bind="${el.dataset.bind}"]`).forEach(o=>{if(o!==el&&o.type!=='checkbox')o.value=el.value})}
+  else if(el.dataset.pid){const p=state.posten.find(x=>x.id===el.dataset.pid);if(!p)return false;const f=el.dataset.field;
+    if(f==='kat'){const oldK=KAT[p.kat];p.kat=el.value;const K=KAT[p.kat];if(!p.name||p.name===oldK?.l)p.name=K.l;p.ar=K.ar;if(!+p.kosten)p.kosten=richtwert(p.kat)}else p[f]=readVal(el)}
+  else return false;
+  save();return true;
+}
+document.addEventListener('input',e=>{if(e.target.type==='file')return;if(apply(e.target)){compute();kpibar();live()}});
+document.addEventListener('change',e=>{if(e.target.type==='file'||e.target.id==='tpl'||e.target.id==='addKat')return;if(apply(e.target))setTimeout(render,0)});
+
+function addPosten(){const k=document.getElementById('addKat').value;state.posten.push(newPosten(k));save();render()}
+function delPosten(id){state.posten=state.posten.filter(p=>p.id!==id);save();render()}
+function setRW(id){const p=state.posten.find(x=>x.id===id);p.kosten=richtwert(p.kat);save();render()}
+function allRichtwerte(){if(!confirm('Alle Kosten durch Richtwerte (Wohnfläche '+state.projekt.wf+' m²) ersetzen?'))return;state.posten.forEach(p=>p.kosten=richtwert(p.kat));save();render()}
+function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function exportJSON(){download((state.projekt.name||'sanierung').replace(/[^\w\-äöüÄÖÜß]+/g,'_')+'.json',JSON.stringify(state,null,2),'application/json')}
+function importJSON(ev){const f=ev.target.files[0];if(!f)return;f.text().then(t=>{try{const s=JSON.parse(t);if(!s.posten)throw 0;state={...defaultState(),...s,S:{...DEFAULT_S,...s.S}};save();render()}catch(e){alert('Datei konnte nicht gelesen werden.')}});ev.target.value=''}
+function exportCSV(){compute();const rows=[['Bezeichnung','Kategorie','Bereich','Kosten','Arbeitsanteil %','Eigenleistung','Status','Förderweg','Programm','Zuschuss','Steuer §35c','Steuer §35a']];
+  C.F.it.forEach(x=>rows.push([x.p.name,x.K.l,GROUPS[x.K.g],Math.round(x.kosten),x.p.ar,x.p.el?'ja':'nein',x.p.status,WEG_TAG[x.weg][0],(PROG[x.c]||PROG.none).kurz,Math.round(x.zuschuss),Math.round(x.st35c),Math.round(x.st35a)]));
+  download('sanierung_posten.csv','﻿'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n'),'text/csv')}
+
+try{state=JSON.parse(localStorage.getItem(LS))}catch(e){}
+if(!state||!state.posten){state=defaultState();loadTemplate('energie',true)}
+state.S={...DEFAULT_S,...state.S};
+render();
+</script>
+</body>
+</html>
