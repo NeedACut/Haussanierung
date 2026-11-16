@@ -206,6 +206,26 @@ details.card summary::-webkit-details-marker{display:none}
 .callout{border-radius:14px;padding:14px 16px;font-size:14px;display:flex;gap:12px;align-items:flex-start}
 .callout.good{background:var(--possoft)}.callout.info{background:var(--infosoft)}.callout.warn{background:var(--accentsoft)}
 #print{display:none}
+.projsw{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:10px 12px;margin:0 0 18px;text-align:left}
+.projsw:hover{background:#fff;border-color:var(--brand2)}
+.projsw .pi{font-size:18px}.projsw .pt{flex:1;min-width:0}
+.projsw small{display:block;font-size:11px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.projsw b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.projbtn{display:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:650;margin-bottom:8px;max-width:70vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;box-shadow:var(--sh);padding:6px 8px 6px 4px;margin-bottom:10px;border:2px solid transparent}
+.pcard.act{border-color:var(--brand2)}
+.pmain{flex:1;min-width:0;cursor:pointer;padding:10px 12px;border-radius:10px}
+.pmain:hover{background:var(--surface2)}
+.pmain b{display:flex;gap:8px;align-items:center;font-size:15.5px}
+.pmain small{display:block;color:var(--ink2);font-size:12.5px;margin-top:2px}
+.pact{display:flex;gap:4px}
+.pact button{width:38px;height:38px;border:0;border-radius:10px;background:var(--surface2);font-size:15px}
+.pact button:hover{background:var(--brandsoft)}
+.obs{display:flex;gap:16px;align-items:center;padding:16px;border-radius:14px;background:var(--surface2);margin-top:12px}
+.obs.ok{background:var(--possoft)}
+.obs b{font-size:15.5px}.obs p{margin:2px 0 0;color:var(--ink2);font-size:13.5px}
+.obn{width:38px;height:38px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:750}
+.obs.ok .obn{background:var(--pos)}
 footer{padding:0 36px 40px;color:var(--ink3);font-size:12px;max-width:1240px}
 
 /* ---------- Responsive ---------- */
@@ -223,6 +243,7 @@ footer{padding:0 36px 40px;color:var(--ink3);font-size:12px;max-width:1240px}
   .tabbar button.on{color:var(--brand)}
   .tabbar button.on .ti{filter:none;opacity:1}
   .pills{width:100%}
+  .projbtn{display:inline-block}
 }
 @media (max-width:700px){
   .c2{grid-template-columns:1fr}.s2{grid-column:auto}
@@ -245,6 +266,7 @@ footer{padding:0 36px 40px;color:var(--ink3);font-size:12px;max-width:1240px}
 <div class="app">
   <aside class="side">
     <div class="logo"><div class="mark">🏡</div><div><b>Sanierungsplaner</b><small>Kosten · Förderung · Finanzierung</small></div></div>
+    <div id="projsw"></div>
     <div class="navi" id="navi"></div>
     <div class="foot">
       <button onclick="printReport()">🖨️ Bericht drucken / PDF</button>
@@ -337,25 +359,33 @@ const DEFAULT_S={
   eh85:5,eh70:10,eh55:15,eh40:20,ehEE:5,ehWPB:10,ehMaxWE:120000,ehMaxWEee:150000,
   zuschMonat:9,einspeis:0.078
 };
+// Leeres Projekt: nur technische Standardwerte (Zins, Puffer …), keine Beispielzahlen
 function defaultState(){return{
-  projekt:{name:'Unser Haus',wf:140,we:1,baujahr:1975,klasse:'G',selbst:true,zve:55000,kinder:0,isfp:false,klima:true,jahre:1,puffer:12,auto:'max'},
-  kauf:{aktiv:true,preis:320000,land:'BW',grest:5,makler:3.57,notar:2},
+  projekt:{name:'Neues Projekt',wf:0,we:1,baujahr:0,klasse:'',selbst:true,zve:0,kinder:0,isfp:false,klima:false,jahre:1,puffer:12,auto:'max'},
+  kauf:{aktiv:true,preis:0,land:'BW',grest:5,makler:3.57,notar:2},
   posten:[],
-  finanz:{ek:80000,zuschSond:true,netto:6500,
+  finanz:{ek:0,zuschSond:true,netto:0,
     a:{zins:3.8,modus:'tilgung',tilg:2,lz:25,bind:10,anschl:4.8,sond:0},
-    b:{aktiv:false,preset:'',betrag:50000,zins:3.2,modus:'laufzeit',tilg:2,lz:20,bind:10,anschl:4.8,sond:0}},
-  energie:{heiz:3200,strom:1400,strompreis:0.34,steig:3},
+    b:{aktiv:false,preset:'',betrag:0,zins:3.2,modus:'laufzeit',tilg:2,lz:20,bind:10,anschl:4.8,sond:0}},
+  energie:{heiz:0,strom:0,strompreis:0.34,steig:3},
   eh:{ziel:'eh70',ee:false,wpb:false},
   S:{...DEFAULT_S}
 };}
+// Beispielprojekt zum Ausprobieren
+function exampleState(){const s=defaultState();
+  Object.assign(s.projekt,{name:'Beispiel: EFH Baujahr 1975',wf:140,baujahr:1975,klasse:'G',zve:55000,klima:true});
+  Object.assign(s.kauf,{preis:320000});Object.assign(s.finanz,{ek:80000,netto:6500});Object.assign(s.energie,{heiz:3200,strom:1400});
+  return s}
 
 /* =====================================================================
    STATE
    ===================================================================== */
-const LS='sanierungsplaner_v1';
+const LS='sanierungsplaner_v1';          // altes Einzel-Projekt (wird übernommen)
+const LSP='sanierungsplaner_projekte';    // neue Projektliste
 let state,page='dash';
+let store={active:null,items:{}};
 const ui={open:new Set(),allRecs:false};
-function save(){try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}}
+function save(){if(!store.active)return;store.items[store.active]={updated:Date.now(),state};try{localStorage.setItem(LSP,JSON.stringify(store))}catch(e){alert('Speichern fehlgeschlagen – Speicher voll?')}}
 function merge(def,obj){if(!obj||typeof obj!=='object'||Array.isArray(def))return obj??def;const o={...def};for(const k in obj)o[k]=(def[k]&&typeof def[k]==='object'&&!Array.isArray(def[k]))?merge(def[k],obj[k]):obj[k];return o}
 
 /* =====================================================================
@@ -375,7 +405,7 @@ const kfmt=v=>Math.abs(v)>=1e6?num(v/1e6,1)+' Mio':Math.abs(v)>=1000?num(v/1000,
 function parseNum(s){s=String(s??'').trim().replace(/[\s€%]/g,'');if(!s)return 0;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(/^-?\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');const v=parseFloat(s);return isFinite(v)?v:0}
 const fmtIn=(v,d=0)=>(+v||0).toLocaleString('de-DE',{maximumFractionDigits:d});
 function richtwert(k){const K=KAT[k];if(!K)return 0;const m=(K.rw[0]+K.rw[1])/2;return K.u==='m2'?Math.round(m*(state.projekt.wf||0)/100)*100:m}
-function rwRange(k){const K=KAT[k];if(!K||!K.rw[1])return'';const f=K.u==='m2'?(state.projekt.wf||0):1;return `${eur(K.rw[0]*f)} – ${eur(K.rw[1]*f)}`}
+function rwRange(k){const K=KAT[k];if(!K||!K.rw[1])return'';const f=K.u==='m2'?(state.projekt.wf||0):1;if(!f)return`${K.rw[0]}–${K.rw[1]} €/m² Wohnfläche`;return `${eur(K.rw[0]*f)} – ${eur(K.rw[1]*f)}`}
 function newPosten(k){const K=KAT[k]||KAT.sonst;return{id:uid(),kat:k,name:K.l,kosten:richtwert(k),ar:K.ar,el:false,status:'geplant',weg:'auto'}}
 
 /* =====================================================================
@@ -526,6 +556,7 @@ function energie(F){
 function recs(F,Fin){
   const P=state.projekt,S=state.S,r=[],has=k=>state.posten.some(p=>p.kat===k&&+p.kosten>0),hasG=g=>state.posten.some(p=>KAT[p.kat]?.g===g&&+p.kosten>0);
   const add=(type,title,text)=>r.push({type,title,text});
+  if(state.posten.length&&!(+P.wf))add('warn','Wohnfläche fehlt','Tragen Sie unter „Immobilie“ die Wohnfläche ein – dann werden die Kosten pro Maßnahme automatisch geschätzt.');
   if(!state.posten.length)add('info','Legen Sie los','Fügen Sie unter „Maßnahmen“ Ihre geplanten Arbeiten hinzu – oder starten Sie mit einer Vorlage. Kosten werden automatisch anhand der Wohnfläche geschätzt.');
   if(F.zuschuss>0)add('risk','Antrag VOR Auftrag stellen','Zuschüsse gibt es nur, wenn der Antrag vor Vorhabenbeginn gestellt wird. Angebote einholen ist erlaubt – Verträge nur mit Klausel „vorbehaltlich Förderzusage“ unterschreiben.');
   const J=jka();
@@ -549,7 +580,7 @@ function recs(F,Fin){
   if(!P.selbst)add('info','Vermietete Immobilie','Steuerboni §35a/§35c gelten nicht – stattdessen Werbungskosten oder Abschreibung. Achtung: 15-%-Grenze für anschaffungsnahe Herstellungskosten in den ersten 3 Jahren nach Kauf.');
   if(Fin.K.preis>0&&Fin.san>Fin.K.preis*0.15*1.19&&!P.selbst)add('warn','15-%-Grenze überschritten','Sanierungskosten über 15 % des Gebäudewerts in 3 Jahren nach Kauf gelten als Herstellungskosten (nur Abschreibung).');
   if((+P.puffer||0)<10)add('warn','Puffer zu knapp',`Üblich sind 10–20 % Reserve für Überraschungen im Altbau. Aktuell: ${P.puffer} %.`);
-  if(+P.baujahr<1993&&(has('entk')||has('fassade')||has('dach'))&&!has('schad'))add('risk','Auf Schadstoffe prüfen','Häuser vor 1993 können Asbest, PCB oder alte Mineralwolle enthalten. Vor dem Abbruch ein Gutachten einholen – sonst drohen Baustopp und Mehrkosten.');
+  if(+P.baujahr>0&&+P.baujahr<1993&&(has('entk')||has('fassade')||has('dach'))&&!has('schad'))add('risk','Auf Schadstoffe prüfen','Häuser vor 1993 können Asbest, PCB oder alte Mineralwolle enthalten. Vor dem Abbruch ein Gutachten einholen – sonst drohen Baustopp und Mehrkosten.');
   if(Fin.quote>0.4)add('risk','Monatliche Belastung sehr hoch',`Die Rate entspricht ${pct(Fin.quote*100,0)} Ihres Nettoeinkommens. Banken akzeptieren meist max. 35–40 %.`);
   else if(Fin.quote>0.3)add('warn','Belastung im Blick behalten',`Die Rate entspricht ${pct(Fin.quote*100,0)} des Nettoeinkommens – tragbar, aber Rücklagen einplanen.`);
   if(state.finanz.zuschSond&&F.zuschuss>0)add('info','Zuschüsse kommen erst später',`Die ${eur(F.zuschuss)} werden erst nach Abschluss ausgezahlt. Im Plan als Sondertilgung angesetzt – vereinbaren Sie kostenlose Sondertilgungen mit der Bank.`);
@@ -598,7 +629,7 @@ const stackBar=parts=>{const t=sum(parts,p=>p.v)||1;return`<div class="stack">${
    FORM-BAUSTEINE
    ===================================================================== */
 const fld=(label,ctrl,help='')=>`<label class="fld"><span class="lbl">${label}</span>${ctrl}${help?`<small>${help}</small>`:''}</label>`;
-const nIn=(path,suf='€',dec=0)=>`<div class="in"><input class="num r" inputmode="decimal" data-bind="${path}" data-dec="${dec}" value="${fmtIn(getP(state,path),dec)}"><span class="suf">${suf}</span></div>`;
+const nIn=(path,suf='€',dec=0)=>`<div class="in"><input class="num r" inputmode="decimal" data-bind="${path}" data-dec="${dec}" placeholder="0" value="${+getP(state,path)?fmtIn(getP(state,path),dec):''}"><span class="suf">${suf}</span></div>`;
 const tIn=path=>`<div class="in"><input type="text" data-bind="${path}" value="${esc(getP(state,path))}"></div>`;
 const sel=(path,opts)=>{const v=getP(state,path);return`<div class="in"><select data-bind="${path}">${opts.map(([a,b])=>`<option value="${a}" ${String(v)===String(a)?'selected':''}>${b}</option>`).join('')}</select></div>`};
 const sw=(path,label,help='')=>`<label class="switch"><input type="checkbox" data-bind="${path}" ${getP(state,path)?'checked':''}><span class="tr"></span><span>${label}${help?`<small>${help}</small>`:''}</span></label>`;
@@ -635,6 +666,13 @@ V.dash.live=()=>{const{F,Fin,En,R}=C;const P=state.projekt;
   const stT=sum(st,s=>s.v)||1;
   const shown=ui.allRecs?R:R.slice(0,4);
   const q=Math.min(Fin.quote*100,60);
+  if(!Fin.total&&!state.posten.length){const done=[!!(+P.wf),Fin.K.preis>0||!state.kauf.aktiv,state.posten.length>0,(+state.finanz.ek)>0||(+state.finanz.netto)>0];
+    const stp=(n,ok,t,d,pg,btn)=>`<div class="obs ${ok?'ok':''}"><div class="obn">${ok?'✓':n}</div><div style="flex:1"><b>${t}</b><p>${d}</p></div><button class="btn ${ok?'ghost':''} sm" onclick="go('${pg}')">${btn}</button></div>`;
+    return`<div class="card" style="padding:30px"><h2 style="font-size:22px">Willkommen bei „${esc(P.name)}“ 👋</h2><p class="sub">Das Projekt ist noch leer. In drei Schritten haben Sie den Überblick:</p>
+     ${stp(1,done[0]&&done[1],'Immobilie eintragen','Kaufpreis (falls Kauf), Wohnfläche, Baujahr und Haushalt.','objekt','Los geht’s')}
+     ${stp(2,done[2],'Maßnahmen hinzufügen','Was soll gemacht werden? Kosten werden automatisch geschätzt.','mass','Maßnahmen')}
+     ${stp(3,done[3],'Finanzierung festlegen','Eigenkapital, Zinssatz und Laufzeit.','finanz','Finanzierung')}
+     <p class="tiny faint mt">Tipp: Über „📁 Projekte“ können Sie mehrere Häuser oder Varianten getrennt planen und vergleichen.</p></div>`}
   return`<div class="hero">
     <div class="k">Gesamtinvestition ${state.kauf.aktiv?'(Kauf + Sanierung)':'(Sanierung)'}</div>
     <div class="v">${eur(Fin.total)}</div>
@@ -687,7 +725,7 @@ V.objekt=()=>{const K=state.kauf,P=state.projekt,J=jka();
     ${fld('Wohnfläche',nIn('projekt.wf','m²'))}
     ${fld('Baujahr',`<div class="in"><input class="num r" inputmode="numeric" data-plain="1" data-bind="projekt.baujahr" value="${+state.projekt.baujahr||''}"></div>`)}
     ${fld('Wohneinheiten',nIn('projekt.we',''))}
-    ${fld('Energieeffizienzklasse',sel('projekt.klasse',['A+','A','B','C','D','E','F','G','H'].map(x=>[x,'Klasse '+x])),'steht im Energieausweis')}
+    ${fld('Energieeffizienzklasse',sel('projekt.klasse',[['','unbekannt'],...['A+','A','B','C','D','E','F','G','H'].map(x=>[x,'Klasse '+x])]),'steht im Energieausweis')}
   </div><div class="mt">
     ${sw('projekt.klima','Alte Öl-, Gas- (>20 J.) oder Nachtspeicherheizung wird ersetzt','bringt den Klima-Bonus bei der Heizungsförderung')}
     ${sw('projekt.isfp','Sanierungsfahrplan (iSFP) liegt vor','erhöht die BAFA-Förderung')}
@@ -873,8 +911,9 @@ V.settings=()=>{const S=state.S;const f=(k,l,suf='')=>fld(l,nIn('S.'+k,suf,3));
  ${sec('🧾 Steuer',f('st35cSatz','§35c Satz','%')+f('st35cMax','§35c Höchstbetrag','€')+f('st35aSatz','§35a Satz','%')+f('st35aMax','§35a max. pro Jahr','€'))}
  ${sec('🏗️ KfW 261 Effizienzhaus',f('eh85','EH 85','%')+f('eh70','EH 70','%')+f('eh55','EH 55','%')+f('eh40','EH 40','%')+f('ehEE','EE-Klasse','+%')+f('ehWPB','WPB-Bonus','+%')+f('ehMaxWE','Max. Kredit','€/WE')+f('ehMaxWEee','Max. Kredit EE','€/WE'))}
  ${sec('🔧 Sonstiges',f('zuschMonat','Zuschuss-Auszahlung in Monat')+f('einspeis','Einspeisevergütung','€/kWh'))}
- <div class="card mt"><h2>Daten</h2><p class="sub">Alles wird nur auf diesem Gerät gespeichert. Sichern Sie Ihr Projekt ab und zu als Datei.</p>
-  <div class="toolbar" style="margin:0"><button class="btn" onclick="exportJSON()">💾 Als Datei sichern</button><button class="btn ghost" onclick="document.getElementById('imp').click()">📂 Datei laden</button><button class="btn ghost" onclick="exportCSV()">📊 Excel-Export</button><button class="btn ghost" onclick="printReport()">🖨️ Bericht drucken</button><button class="btn danger" onclick="if(confirm('Alles zurücksetzen? Alle Eingaben gehen verloren.')){state=defaultState();loadTemplate('energie',true);save();render()}">Alles zurücksetzen</button></div></div>
+ <div class="card mt"><h2>Projekt & Daten</h2><p class="sub">Alles wird nur auf diesem Gerät gespeichert. Sichern Sie Ihre Projekte ab und zu als Datei.</p>
+  <div class="toolbar" style="margin:0"><button class="btn" onclick="openProjects()">📁 Projekte verwalten</button><button class="btn ghost" onclick="exportJSON()">💾 Projekt als Datei sichern</button><button class="btn ghost" onclick="document.getElementById('imp').click()">📂 Datei laden</button><button class="btn ghost" onclick="exportCSV()">📊 Excel-Export</button><button class="btn ghost" onclick="printReport()">🖨️ Bericht drucken</button></div>
+  <div class="toolbar mt" style="margin-bottom:0"><button class="btn danger" onclick="clearProject()">🧹 Alle Werte dieses Projekts löschen</button></div></div>
  <div class="card mt"><h2>Quellen (Stand November 2026)</h2><ul class="small muted" style="margin:8px 0 0;padding-left:18px;line-height:1.8">
   <li>BEG-Einzelmaßnahmen nach Reform 21.07.2026: <a href="https://baukostenplan.de/ratgeber/bafa-beg-einzelmassnahmen-reform-juli-2026" target="_blank">baukostenplan.de</a>, <a href="https://www.lenzenergieberatung.de/ratgeber-energieberatung/isfp-bonus-2026-geaendert" target="_blank">lenzenergieberatung.de</a></li>
   <li>KfW 458: <a href="https://www.adac.de/rund-ums-haus/energie/spartipps/foerderung-heizung/" target="_blank">ADAC</a>, <a href="https://baukostenplan.de/ratgeber/kfw-heizungsfoerderung-aenderungen-juli-2026" target="_blank">baukostenplan.de</a></li>
@@ -911,7 +950,9 @@ function chrome(){
   document.getElementById('navi').innerHTML=PAGES.map(([k,i,s,l],n)=>`<button class="${k===page?'on':''}" onclick="go('${k}')"><span class="ni">${i}</span>${l.split(' &')[0]}${n>0&&n<6?`<span class="step">${n}</span>`:''}</button>`).join('');
   document.getElementById('tabbar').innerHTML=PAGES.filter(p=>p[0]!=='settings').map(([k,i,s])=>`<button class="${k===page?'on':''}" onclick="go('${k}')"><span class="ti">${i}</span>${s}</button>`).join('');
   const{F,Fin}=C;
-  document.getElementById('topbar').innerHTML=`<div><h1>${pg[3]}</h1><p>${page==='dash'?esc(state.projekt.name)+' · ':''}${pg[4]}</p></div>
+  const n=Object.keys(store.items).length;
+  document.getElementById('projsw').innerHTML=`<button class="projsw" onclick="openProjects()"><span class="pi">📁</span><span class="pt"><small>Projekt${n>1?` · ${n} gespeichert`:''}</small><b>${esc(state.projekt.name||'Ohne Namen')}</b></span><span class="faint">⇅</span></button>`;
+  document.getElementById('topbar').innerHTML=`<div><button class="projbtn" onclick="openProjects()">📁 ${esc(state.projekt.name||'Ohne Namen')} <span class="faint">▾</span></button><h1>${pg[3]}</h1><p>${pg[4]}</p></div>
    <div class="pills"><span class="pill">Gesamt<b>${eur(Fin.total)}</b></span><span class="pill g">Förderung<b>${eur(F.total)}</b></span><span class="pill">Rate<b>${eur(Fin.rate)}/Mon.</b></span></div>
    <button class="gear" onclick="go('settings')" aria-label="Einstellungen">⚙️</button>`;
 }
@@ -955,16 +996,63 @@ function setRW(id){const p=state.posten.find(x=>x.id===id);p.kosten=richtwert(p.
 function allRichtwerte(){if(!confirm(`Alle Kosten neu schätzen (Wohnfläche ${num(state.projekt.wf)} m²)? Eigene Beträge werden überschrieben.`))return;state.posten.forEach(p=>p.kosten=richtwert(p.kat));save();render()}
 function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function exportJSON(){download((state.projekt.name||'sanierung').replace(/[^\wäöüÄÖÜß\-]+/g,'_')+'.json',JSON.stringify(state,null,2),'application/json')}
-function importJSON(ev){const f=ev.target.files[0];if(!f)return;f.text().then(t=>{try{const s=JSON.parse(t);if(!s.posten)throw 0;state=merge(defaultState(),s);save();render();alert('Projekt geladen ✅')}catch(e){alert('Die Datei konnte nicht gelesen werden.')}});ev.target.value=''}
+function importJSON(ev){const f=ev.target.files[0];if(!f)return;f.text().then(t=>{try{const s=JSON.parse(t);if(!s.posten)throw 0;
+  store.active=uid();state=merge(defaultState(),s);save();ui.open.clear();closeModal();go('dash');alert(`Projekt „${state.projekt.name}“ wurde hinzugefügt ✅`)}catch(e){alert('Die Datei konnte nicht gelesen werden.')}});ev.target.value=''}
+
+/* ---------- Projekte ---------- */
+function summaryOf(st){const keep=state;try{state=merge(defaultState(),st);const F=foerder(),Fin=finanz(F);return{total:Fin.total,rate:Fin.rate,n:state.posten.length,name:state.projekt.name}}finally{state=keep}}
+function openProjects(){
+  const ids=Object.keys(store.items).sort((a,b)=>store.items[b].updated-store.items[a].updated);
+  const m=document.getElementById('modal');
+  m.innerHTML=`<div class="sheet" style="width:min(720px,100%)"><div class="sheet-h"><h2>📁 Meine Projekte</h2><button class="x" onclick="closeModal()">✕</button></div><div class="sheet-b">
+   <p class="sub" style="margin-top:0">Jedes Projekt speichert seine eigenen Werte – z. B. verschiedene Häuser oder Varianten („mit / ohne Wärmepumpe“).</p>
+   ${ids.map(id=>{const s=summaryOf(store.items[id].state);const act=id===store.active;const d=new Date(store.items[id].updated);
+     return`<div class="pcard ${act?'act':''}"><div class="pmain" onclick="switchProject('${id}')"><b>${esc(s.name||'Ohne Namen')} ${act?'<span class="tag t-z">geöffnet</span>':''}</b>
+      <small>${s.total?eur(s.total)+' Gesamt · '+eur(s.rate)+'/Monat · ':''}${s.n} Maßnahmen · geändert ${d.toLocaleDateString('de-DE')} ${d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</small></div>
+      <div class="pact"><button title="Umbenennen" onclick="renameProject('${id}')">✏️</button><button title="Kopie anlegen" onclick="dupProject('${id}')">⧉</button><button title="Löschen" onclick="delProject('${id}')">🗑</button></div></div>`}).join('')}
+   <div class="card mt" style="box-shadow:none;border:1.5px dashed var(--line);background:var(--surface)"><h2>＋ Neues Projekt</h2>
+    <div class="fld mt2"><span class="lbl">Name</span><div class="in"><input type="text" id="np-name" placeholder="z. B. Haus Musterstraße 5"></div></div>
+    <div class="toolbar mt" style="margin-bottom:0"><button class="btn" onclick="newProject(false)">Leer anlegen</button><button class="btn ghost" onclick="newProject(true)">Mit Beispielwerten</button><button class="btn ghost" onclick="document.getElementById('imp').click()">📂 Aus Datei</button></div></div>
+  </div></div>`;
+  m.classList.add('show');
+}
+function newProject(example){const name=(document.getElementById('np-name')?.value||'').trim();
+  state=example?exampleState():defaultState();if(example)loadTemplate('energie',true);if(name)state.projekt.name=name;
+  store.active=uid();save();ui.open.clear();closeModal();go(example?'dash':'objekt')}
+function switchProject(id){if(!store.items[id])return;store.active=id;state=merge(defaultState(),store.items[id].state);save();ui.open.clear();closeModal();go('dash')}
+function renameProject(id){const it=store.items[id];const n=prompt('Neuer Name für das Projekt:',it.state.projekt.name||'');if(n===null||!n.trim())return;
+  it.state.projekt.name=n.trim();if(id===store.active)state.projekt.name=n.trim();it.updated=Date.now();localStorage.setItem(LSP,JSON.stringify(store));render();openProjects()}
+function dupProject(id){const cp=JSON.parse(JSON.stringify(store.items[id].state));cp.projekt.name=(cp.projekt.name||'Projekt')+' (Kopie)';cp.posten.forEach(p=>p.id=uid());
+  const nid=uid();store.items[nid]={updated:Date.now(),state:cp};localStorage.setItem(LSP,JSON.stringify(store));openProjects()}
+function delProject(id){const nm=store.items[id].state.projekt.name;if(!confirm(`Projekt „${nm}“ endgültig löschen? Das kann nicht rückgängig gemacht werden.`))return;
+  delete store.items[id];
+  if(id===store.active){const rest=Object.keys(store.items).sort((a,b)=>store.items[b].updated-store.items[a].updated);
+    if(rest.length){store.active=rest[0];state=merge(defaultState(),store.items[rest[0]].state)}else{store.active=uid();state=defaultState()}save()}
+  else localStorage.setItem(LSP,JSON.stringify(store));
+  ui.open.clear();render();openProjects()}
+function clearProject(){if(!confirm(`Alle Werte von „${state.projekt.name}“ löschen? Der Name bleibt, alle Zahlen und Maßnahmen werden entfernt.`))return;
+  const nm=state.projekt.name;state=defaultState();state.projekt.name=nm;save();ui.open.clear();go('dash')}
 function exportCSV(){compute();const rows=[['Maßnahme','Art','Bereich','Kosten','Arbeitsanteil %','Eigenleistung','Status','Förderweg','Programm','Zuschuss','Steuer §35c','Steuer §35a']];
   C.F.it.forEach(x=>rows.push([x.p.name,x.K.l,GROUPS[x.K.g],Math.round(x.kosten),x.p.ar,x.p.el?'ja':'nein',x.p.status,WEG[x.weg][0],(PROG[x.c]||PROG.none).kurz,Math.round(x.zuschuss),Math.round(x.st35c),Math.round(x.st35a)]));
   download('sanierung_massnahmen.csv','﻿'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n'),'text/csv')}
 
 /* ---------- Start ---------- */
-let loaded=null;try{loaded=JSON.parse(localStorage.getItem(LS))}catch(e){}
-if(loaded&&loaded.posten){state=merge(defaultState(),loaded);if(!loaded.kauf)state.kauf.aktiv=false}
-else{state=defaultState();loadTemplate('energie',true);save()}
-render();
+(function start(){
+  try{const s=JSON.parse(localStorage.getItem(LSP));if(s&&s.items&&Object.keys(s.items).length)store=s}catch(e){}
+  if(!store.active||!store.items[store.active]){
+    const ids=Object.keys(store.items);
+    if(ids.length)store.active=ids[0];
+    else{ // Altes Einzelprojekt übernehmen – oder leer starten
+      let old=null;try{old=JSON.parse(localStorage.getItem(LS))}catch(e){}
+      store.active=uid();
+      if(old&&old.posten){state=merge(defaultState(),old);if(!old.kauf)state.kauf.aktiv=false;if(!old.projekt?.name||old.projekt.name==='Mein Sanierungsprojekt')state.projekt.name='Mein Projekt'}
+      else state=defaultState();
+      save();
+    }
+  }
+  if(!state)state=merge(defaultState(),store.items[store.active].state);
+  render();
+})();
 </script>
 </body>
 </html>
