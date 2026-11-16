@@ -224,6 +224,7 @@ details.card summary::-webkit-details-marker{display:none}
 .obs{display:flex;gap:16px;align-items:center;padding:16px;border-radius:14px;background:var(--surface2);margin-top:12px}
 .obs.ok{background:var(--possoft)}
 .obs b{font-size:15.5px}.obs p{margin:2px 0 0;color:var(--ink2);font-size:13.5px}
+.grundbox{border-top:1px dashed var(--line);padding-top:14px}
 .obn{width:38px;height:38px;flex:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:750}
 .obs.ok .obn{background:var(--pos)}
 footer{padding:0 36px 40px;color:var(--ink3);font-size:12px;max-width:1240px}
@@ -362,7 +363,7 @@ const DEFAULT_S={
 // Leeres Projekt: nur technische Standardwerte (Zins, Puffer …), keine Beispielzahlen
 function defaultState(){return{
   projekt:{name:'Neues Projekt',wf:0,we:1,baujahr:0,klasse:'',selbst:true,zve:0,kinder:0,isfp:false,klima:false,jahre:1,puffer:12,auto:'max'},
-  kauf:{aktiv:true,preis:0,land:'BW',grest:5,makler:3.57,notar:2},
+  kauf:{aktiv:true,preis:0,land:'BW',grest:5,makler:3.57,notar:2,grund:{aktiv:false,preis:0,flaeche:0,makler:true}},
   posten:[],
   finanz:{ek:0,zuschSond:true,netto:0,
     a:{zins:3.8,modus:'tilgung',tilg:2,lz:25,bind:10,anschl:4.8,sond:0},
@@ -505,8 +506,10 @@ function sim(L,B,extras=[]){
   }
   return{B,rate,n,rateAfter,restBind:restBind??0,zSum,months:m,rows};
 }
-function kaufCalc(){const K=state.kauf;if(!K.aktiv)return{preis:0,grest:0,makler:0,notar:0,nk:0};
-  const p=+K.preis||0;const g=p*(+K.grest||0)/100,m=p*(+K.makler||0)/100,n=p*(+K.notar||0)/100;return{preis:p,grest:g,makler:m,notar:n,nk:g+m+n}}
+function kaufCalc(){const K=state.kauf,G=K.grund||{};
+  const haus=K.aktiv?(+K.preis||0):0, grund=G.aktiv?(+G.preis||0):0, p=haus+grund;
+  const g=p*(+K.grest||0)/100, m=(haus+(G.makler?grund:0))*(+K.makler||0)/100, n=p*(+K.notar||0)/100;
+  return{preis:p,haus,grund,grundQm:G.aktiv&&+G.flaeche?grund/+G.flaeche:0,grest:g,makler:m,notar:n,nk:g+m+n}}
 function finanz(F){
   const P=state.projekt,Fi=state.finanz;
   const Kc=kaufCalc();
@@ -657,7 +660,7 @@ const V={};
 /* ---------- Übersicht ---------- */
 V.dash=()=>`<div id="L"></div>`;
 V.dash.live=()=>{const{F,Fin,En,R}=C;const P=state.projekt;
-  const parts=[{l:'Kaufpreis',c:'#cfe6df',v:Fin.K.preis},{l:'Kaufnebenkosten',c:'#8fc7b8',v:Fin.K.nk},{l:'Sanierung',c:'#f2c46d',v:Fin.san},{l:'Puffer',c:'#f7dfae',v:Fin.puffer}];
+  const parts=[{l:'Kaufpreis',c:'#cfe6df',v:Fin.K.haus},{l:'Grundstück',c:'#a9d6c9',v:Fin.K.grund},{l:'Kaufnebenkosten',c:'#8fc7b8',v:Fin.K.nk},{l:'Sanierung',c:'#f2c46d',v:Fin.san},{l:'Puffer',c:'#f7dfae',v:Fin.puffer}];
   const pt=sum(parts,p=>p.v)||1;
   const byG=Object.keys(GROUPS).map(g=>({l:GROUPS[g],c:GCOL[g],v:sum(state.posten.filter(p=>(KAT[p.kat]||KAT.sonst).g===g),p=>+p.kosten||0)}));
   const zuschLater=state.finanz.zuschSond;
@@ -674,9 +677,9 @@ V.dash.live=()=>{const{F,Fin,En,R}=C;const P=state.projekt;
      ${stp(3,done[3],'Finanzierung festlegen','Eigenkapital, Zinssatz und Laufzeit.','finanz','Finanzierung')}
      <p class="tiny faint mt">Tipp: Über „📁 Projekte“ können Sie mehrere Häuser oder Varianten getrennt planen und vergleichen.</p></div>`}
   return`<div class="hero">
-    <div class="k">Gesamtinvestition ${state.kauf.aktiv?'(Kauf + Sanierung)':'(Sanierung)'}</div>
+    <div class="k">Gesamtinvestition ${Fin.K.preis?'(Kauf + Sanierung)':'(Sanierung)'}</div>
     <div class="v">${eur(Fin.total)}</div>
-    <div class="d">${eur(Fin.total/(P.wf||1))} pro m² Wohnfläche · davon bleiben nach Förderung ${eur(Fin.total-F.total)} bei Ihnen</div>
+    <div class="d">${+P.wf?eur(Fin.total/P.wf)+' pro m² Wohnfläche · ':''}davon bleiben nach Förderung ${eur(Fin.total-F.total)} bei Ihnen</div>
     <div class="bar">${parts.map(p=>`<div style="width:${p.v/pt*100}%;background:${p.c}"></div>`).join('')}</div>
     <div class="lg">${parts.filter(p=>p.v>0).map(p=>`<span style="--c:${p.c}">${p.l}<b>${eur(p.v)}</b></span>`).join('')}</div>
   </div>
@@ -712,13 +715,22 @@ V.objekt=()=>{const K=state.kauf,P=state.projekt,J=jka();
  return`<div class="grid c2">
   <div class="card s2"><h2>Immobilie</h2><p class="sub">Kaufen Sie die Immobilie gerade, oder gehört sie Ihnen schon?</p>
     ${seg('kauf.aktiv',[[true,'🔑 Ich kaufe die Immobilie'],[false,'🏡 Gehört mir bereits']])}
-    ${K.aktiv?`<div class="fg mt">
-      ${fld('Kaufpreis',nIn('kauf.preis'))}
+    ${K.aktiv||K.grund.aktiv?`<div class="fg mt">
+      ${K.aktiv?fld('Kaufpreis Immobilie',nIn('kauf.preis'),'inkl. Grundstück, auf dem das Haus steht'):''}
       ${fld('Bundesland',sel('kauf.land',Object.entries(LAENDER).map(([k,[n,s]])=>[k,`${n} (${num(s,1)} %)`])),'bestimmt die Grunderwerbsteuer')}
       ${fld('Grunderwerbsteuer',nIn('kauf.grest','%',2))}
       ${fld('Makler',nIn('kauf.makler','%',2),'0 bei Kauf ohne Makler')}
       ${fld('Notar & Grundbuch',nIn('kauf.notar','%',2),'üblich ca. 1,5–2 %')}
-    </div><div class="list mt" id="kaufsum"></div>`:''}
+    </div>`:''}
+    <div class="grundbox mt">
+      ${sw('kauf.grund.aktiv','🌳 Zusätzliches Grundstück kaufen','z. B. Nachbargrundstück, Garten- oder Bauland – Grunderwerbsteuer & Notar fallen auch hier an')}
+      ${K.grund.aktiv?`<div class="fg mt">
+        ${fld('Grundstückspreis',nIn('kauf.grund.preis'))}
+        ${fld('Grundstücksfläche',nIn('kauf.grund.flaeche','m²'))}
+        <div class="fld"><span class="lbl">Preis pro m²</span><div class="in" style="background:var(--brandsoft);border-color:transparent"><input id="grundqm" class="r" readonly tabindex="-1" value=""><span class="suf">€/m²</span></div><small>Vergleich: <a href="https://www.bodenrichtwerte-boris.de" target="_blank" rel="noopener">Bodenrichtwert (BORIS) prüfen →</a></small></div>
+      </div><div class="mt">${sw('kauf.grund.makler','Mit Makler gekauft')}</div>`:''}
+    </div>
+    ${K.aktiv||K.grund.aktiv?`<div class="list mt" id="kaufsum"></div>`:''}
   </div>
   <div class="card"><h2>Gebäude</h2><p class="sub">Grundlage für Kostenschätzung und Förderung</p><div class="fg">
     ${fld('Projektname',tIn('projekt.name'))}
@@ -744,7 +756,8 @@ V.objekt=()=>{const K=state.kauf,P=state.projekt,J=jka();
   <div class="card s2" id="jka"></div>
  </div>`};
 V.objekt.live=()=>{const{Fin}=C;const K=Fin.K;const el=document.getElementById('kaufsum');
-  if(el)el.innerHTML=`<div class="r"><span>Kaufpreis</span><b>${eur(K.preis)}</b></div><div class="r"><span class="muted">+ Grunderwerbsteuer</span><b>${eur(K.grest)}</b></div><div class="r"><span class="muted">+ Makler</span><b>${eur(K.makler)}</b></div><div class="r"><span class="muted">+ Notar & Grundbuch</span><b>${eur(K.notar)}</b></div><div class="r tot"><span>Kaufkosten gesamt</span><b>${eur(K.preis+K.nk)}</b></div>`;
+  const q=document.getElementById('grundqm');if(q)q.value=K.grundQm?num(K.grundQm,0):'–';
+  if(el)el.innerHTML=`${K.haus?`<div class="r"><span>Kaufpreis Immobilie</span><b>${eur(K.haus)}</b></div>`:''}${K.grund?`<div class="r"><span>Grundstück${+state.kauf.grund.flaeche?` (${num(state.kauf.grund.flaeche)} m²)`:''}</span><b>${eur(K.grund)}</b></div>`:''}<div class="r"><span class="muted">+ Grunderwerbsteuer</span><b>${eur(K.grest)}</b></div><div class="r"><span class="muted">+ Makler</span><b>${eur(K.makler)}</b></div><div class="r"><span class="muted">+ Notar & Grundbuch</span><b>${eur(K.notar)}</b></div><div class="r tot"><span>Kaufkosten gesamt</span><b>${eur(K.preis+K.nk)}</b></div>`;
   const J=jka();const j=document.getElementById('jka');if(!j)return;
   if(!state.kauf.aktiv){j.style.display='none';return}j.style.display='';
   const row=(ok,t)=>`<div class="r"><span class="l">${ok?'✅':'⬜️'} ${t}</span></div>`;
@@ -867,7 +880,7 @@ V.finanz=()=>{const Fi=state.finanz;const loan=(k,title,sub)=>{const L=Fi[k];ret
  <div class="grid c2 mt"><div class="card"><h2>Was wäre, wenn der Zins …</h2><p class="sub">Darlehen A bei anderem Zinssatz</p><div id="sc1"></div></div><div class="card"><h2>Risiko nach der Zinsbindung</h2><div id="sc2"></div></div></div>
  <details class="card mt"><summary>Tilgungsplan Jahr für Jahr</summary><div class="tw mt" id="plan"></div></details>`};
 V.finanz.live=()=>{const{F,Fin}=C;const Fi=state.finanz;const set=(id,h)=>{const e=document.getElementById(id);if(e)e.innerHTML=h};
-  set('bedarf',`${Fin.K.preis?`<div class="r"><span>Kauf inkl. Nebenkosten</span><b>${eur(Fin.K.preis+Fin.K.nk)}</b></div>`:''}<div class="r"><span>Sanierung inkl. Puffer</span><b>${eur(Fin.san+Fin.puffer)}</b></div>
+  set('bedarf',`${Fin.K.preis?`<div class="r"><span>${Fin.K.grund?'Kauf inkl. Grundstück & Nebenkosten':'Kauf inkl. Nebenkosten'}</span><b>${eur(Fin.K.preis+Fin.K.nk)}</b></div>`:''}<div class="r"><span>Sanierung inkl. Puffer</span><b>${eur(Fin.san+Fin.puffer)}</b></div>
    <div class="r"><span class="muted">− Eigenkapital</span><b>${eur(Fin.ek)}</b></div>${Fi.zuschSond?'':`<div class="r"><span class="muted">− Zuschüsse</span><b>${eur(F.zuschuss)}</b></div>`}
    <div class="r tot"><span>Kreditbedarf</span><b>${eur(Fin.bedarf)}</b></div>
    <div class="r"><span class="muted">davon Bankdarlehen</span><b>${eur(Fin.aB)}</b></div>${Fin.bB?`<div class="r"><span class="muted">davon Förderkredit</span><b>${eur(Fin.bB)}</b></div>`:''}
@@ -927,7 +940,7 @@ V.settings=()=>{const S=state.S;const f=(k,l,suf='')=>fld(l,nIn('S.'+k,suf,3));
 function printReport(){compute();const{F,Fin,En,R}=C;const P=state.projekt;
   document.getElementById('print').innerHTML=`<h1>🏡 ${esc(P.name)}</h1><div style="color:#666">Sanierungsplan · erstellt am ${new Date().toLocaleDateString('de-DE')} · ${num(P.wf)} m² · Baujahr ${P.baujahr} · Klasse ${P.klasse}</div>
   <h2>Zusammenfassung</h2><table>
-   ${Fin.K.preis?`<tr><td>Kaufpreis</td><td class="n">${eur(Fin.K.preis)}</td></tr><tr><td>Kaufnebenkosten</td><td class="n">${eur(Fin.K.nk)}</td></tr>`:''}
+   ${Fin.K.haus?`<tr><td>Kaufpreis Immobilie</td><td class="n">${eur(Fin.K.haus)}</td></tr>`:''}${Fin.K.grund?`<tr><td>Grundstück</td><td class="n">${eur(Fin.K.grund)}</td></tr>`:''}${Fin.K.preis?`<tr><td>Kaufnebenkosten</td><td class="n">${eur(Fin.K.nk)}</td></tr>`:''}
    <tr><td>Sanierung</td><td class="n">${eur(Fin.san)}</td></tr><tr><td>Puffer (${P.puffer} %)</td><td class="n">${eur(Fin.puffer)}</td></tr>
    <tr class="tot"><td>Gesamtinvestition</td><td class="n">${eur(Fin.total)}</td></tr>
    <tr><td>Förderung (Zuschüsse + Steuer)</td><td class="n">${eur(F.total)}</td></tr><tr><td>Eigenkapital</td><td class="n">${eur(Fin.ek)}</td></tr>
